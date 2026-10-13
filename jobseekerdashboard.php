@@ -12,6 +12,7 @@
     <link rel="icon" type="image/svg+xml" href="image/favicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ViecNhe</title>
+    <link rel="stylesheet" href="mediato-theme.css?v=6">
 </head>
 
 <body>

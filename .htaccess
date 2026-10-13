@@ -1,0 +1,11 @@
+RewriteEngine On
+
+RewriteBase /WebTuVan/
+
+RewriteRule ^(?:employerprofile|employerpage)(?:/.*\.php)?$ /WebTuVan/index.php [R=302,L,NC]
+RewriteRule ^(?:applyform|save_job_action|delete_cv|upload_cv|save_profile|dang_ky_cong_ty_nb_thanh_cong|dang_ky_cong_ty_nb_thanh_toan|huy_dang_ky_cong_ty_nb|test_payment)\.php$ /WebTuVan/index.php [R=302,L,NC]
+RewriteRule ^(?:companyprofile|company_information|featured_companies|ds_cong_ty_noi_bat|ho_so_ung_vien|sitemap)\.php$ /WebTuVan/index.php [R=302,L,NC]
+RewriteRule ^job_filter(?:/.*)?$ /WebTuVan/index.php [R=302,L,NC]
+RewriteRule ^app/views/job(?:/.*\.php)?$ /WebTuVan/index.php [R=302,L,NC]
+RewriteRule ^app/controllers/JobControllers\.php$ /WebTuVan/index.php [R=302,L,NC]
+RewriteRule ^public/(?:checkout|success|cancel|check_signature)\.php$ /WebTuVan/index.php [R=302,L,NC]

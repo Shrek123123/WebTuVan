@@ -659,6 +659,7 @@ $employername = $_SESSION['usernameemployer'] ?? 'Employer';
             transform: translateY(-1px);
         }
     </style>
+    <link rel="stylesheet" href="../mediato-theme.css?v=6">
 </head>
 
 

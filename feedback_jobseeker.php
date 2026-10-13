@@ -136,6 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .stars label { padding: 0 4px; font-size: 1.8rem; }
     }
 </style>
+    <link rel="stylesheet" href="mediato-theme.css?v=6">
 </head>
 <body>
 <?php include __DIR__ . '/homepage/header.php'; ?>

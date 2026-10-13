@@ -1,4 +1,8 @@
 <?php
+session_start();
+header('Location: ' . (isset($_SESSION['usernameadmin']) ? 'admindashboard.php' : '../index.php'), true, 302);
+exit;
+
 // admin/jobpendingdetail.php
 session_start();
 require_once '../config.php'; // Điều chỉnh đường dẫn đến config.php
@@ -361,6 +365,7 @@ $conn->close();
             line-height: 1;
         }
     </style>
+    <link rel="stylesheet" href="../mediato-theme.css?v=6">
 </head>
 <body>
     <?php include __DIR__ . '/mobile_sidebar.php'; ?>

@@ -221,6 +221,7 @@ require_once 'config.php'; // Đảm bảo config.php được bao gồm
             }
         }
     </style>
+    <link rel="stylesheet" href="../mediato-theme.css?v=6">
 </head>
 
 <body>

@@ -29,24 +29,9 @@ if (isset($conn) && $conn->ping()) {
         // Handle query error
         echo "Lỗi truy vấn phản hồi: " . $conn->error;
     }
-    // Đếm số mục chờ duyệt cho badge trên sidebar (job + company)
-    $pending_jobs_badge = 0;
-    $pending_companies_badge = 0;
-    $res_pending_jobs = $conn->query("SELECT COUNT(*) AS total FROM hoa_giai_vien WHERE status = 'pending_review'");
-    if ($res_pending_jobs) {
-        $pending_jobs_badge = (int) ($res_pending_jobs->fetch_assoc()['total'] ?? 0);
-        $res_pending_jobs->close();
-    }
-    $res_pending_companies = $conn->query("SELECT COUNT(*) AS total FROM company WHERE status = 'pending_review'");
-    if ($res_pending_companies) {
-        $pending_companies_badge = (int) ($res_pending_companies->fetch_assoc()['total'] ?? 0);
-        $res_pending_companies->close();
-    }
     $conn->close();
 } else {
     echo "Lỗi kết nối cơ sở dữ liệu.";
-    $pending_jobs_badge = 0;
-    $pending_companies_badge = 0;
 }
 ?>
 <!DOCTYPE html>
@@ -214,6 +199,7 @@ if (isset($conn) && $conn->ping()) {
             line-height: 1;
         }
     </style>
+    <link rel="stylesheet" href="../mediato-theme.css?v=6">
 </head>
 
 <body>
@@ -227,12 +213,6 @@ if (isset($conn) && $conn->ping()) {
         <ul>
             <li><a href="#">Thay đổi ảnh trang chủ</a></li>
             <li><a href="#">Người dùng</a></li>
-            <li><a href="jobpending.php">Duyệt tin tuyển dụng
-                    <?php if ($pending_jobs_badge > 0): ?><span class="nav-badge"><?php echo $pending_jobs_badge; ?></span><?php endif; ?>
-                </a></li>
-            <li><a href="company_check.php">Duyệt thông tin công ty
-                    <?php if ($pending_companies_badge > 0): ?><span class="nav-badge"><?php echo $pending_companies_badge; ?></span><?php endif; ?>
-                </a></li>
             <li><a href="user_table.php">Duyệt người dùng</a></li>
             <li><a href="feedbackcheck.php">Phản hồi</a></li>
         </ul>

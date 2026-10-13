@@ -1,11 +1,14 @@
 <?php
 session_start();
 require_once __DIR__ . '/config.php';
+if (empty($_SESSION['customer_password_reset_csrf'])) {
+    $_SESSION['customer_password_reset_csrf'] = bin2hex(random_bytes(32));
+}
 
-if (isset($_GET['lang'])) {
+if (isset($_GET['lang']) && in_array($_GET['lang'], ['vi', 'en'], true)) {
     $_SESSION['lang'] = $_GET['lang'];
 }
-if (!isset($_SESSION['lang'])) {
+if (!in_array($_SESSION['lang'] ?? 'vi', ['vi', 'en'], true)) {
     $_SESSION['lang'] = 'vi';
 }
 include __DIR__ . '/lang/' . basename($_SESSION['lang']) . '.php';
@@ -29,6 +32,7 @@ include __DIR__ . '/lang/' . basename($_SESSION['lang']) . '.php';
         button:disabled { opacity: .6; cursor: wait; }
         .message { min-height: 21px; margin: 14px 0 0; color: #b42318; text-align: center; }
     </style>
+    <link rel="stylesheet" href="mediato-theme.css?v=6">
 </head>
 <body>
     <main class="recovery-card">
@@ -49,7 +53,7 @@ include __DIR__ . '/lang/' . basename($_SESSION['lang']) . '.php';
             button.disabled = true;
             message.textContent = '';
             try {
-                const body = new URLSearchParams({ action: 'send_otp', email: document.getElementById('email-input').value });
+                const body = new URLSearchParams({ action: 'send_otp', email: document.getElementById('email-input').value, csrf_token: <?= json_encode($_SESSION['customer_password_reset_csrf']) ?> });
                 const response = await fetch('jobseekerforgetpassword_process.php', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
                 const data = await response.json();
                 if (data.success) {

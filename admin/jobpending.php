@@ -1,6 +1,8 @@
 <?php
 // admin/jobpending.php
 session_start();
+header('Location: ' . (isset($_SESSION['usernameadmin']) ? 'admindashboard.php' : '../index.php'), true, 302);
+exit;
 require_once '../config.php'; // Điều chỉnh đường dẫn đến config.php
 
 // --- Kiểm tra quyền Admin (quan trọng) ---
@@ -178,6 +180,7 @@ $sql = "SELECT j.id, j.job_title, c.company_name, j.posted_by_employer_id
             line-height: 1;
         }
     </style>
+    <link rel="stylesheet" href="../mediato-theme.css?v=6">
 </head>
 <body>
     <?php include __DIR__ . '/mobile_sidebar.php'; ?>

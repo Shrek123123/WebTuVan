@@ -893,6 +893,7 @@ if (!$company_data && $company_id > 0) {
             background: #b23b3b; color: #fff !important; transform: translateY(-1px);
         }
     </style>
+    <link rel="stylesheet" href="../mediato-theme.css?v=6">
 </head>
 
 

@@ -846,6 +846,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .salary-controls input { flex: 1; min-width: 0; }
         @media (max-width: 600px) { .salary-controls { gap: 5px; } }
     </style>
+    <link rel="stylesheet" href="../mediato-theme.css?v=6">
 </head>
 
 

@@ -179,6 +179,7 @@ $statusContent = [
             *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
         }
     </style>
+    <link rel="stylesheet" href="../mediato-theme.css?v=6">
 </head>
 <body>
     <main class="result result--<?= htmlspecialchars($status, ENT_QUOTES, 'UTF-8') ?>">

@@ -1,218 +1,80 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
-
 <style>
-    .footer-new {
-        background-color: #B73C3C;
-        color: white;
-        font-family: Arial, sans-serif;
-
+    .mediator-site-footer {
+        border-top: 1px solid #dce1da;
+        background: #eaece5;
+        color: #1d302f;
+        font-family: Arial, Helvetica, sans-serif;
     }
-
-    .hotline-section {
+    .mediator-footer-inner {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(180px, .65fr);
+        gap: 42px;
+        width: min(1160px, calc(100% - 44px));
+        margin: 0 auto;
+        padding: 38px 0 26px;
+    }
+    .mediator-footer-brand {
+        margin: 0 0 9px;
+        font: 500 1.35rem Georgia, 'Times New Roman', serif;
+    }
+    .mediator-footer-copy {
+        max-width: 530px;
+        margin: 0;
+        color: #5e6d69;
+        font-size: .91rem;
+        line-height: 1.7;
+    }
+    .mediator-footer-heading {
+        margin: 2px 0 12px;
+        color: #5e6d69;
+        font-size: .7rem;
+        font-weight: 800;
+        letter-spacing: .13em;
+        text-transform: uppercase;
+    }
+    .mediator-footer-links {
         display: flex;
-        justify-content: space-around;
-        background-color: #fff;
-        padding: 30px 10px;
-        border: 1px solid #ccc;
-        border-bottom: none;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 9px;
     }
-
-    .hotline-box {
-        flex: 1;
-        padding: 0 20px;
-        text-align: center;
-        border-right: 1px solid #ddd;
+    .mediator-footer-links a {
+        color: #1d302f;
+        font-size: .9rem;
+        text-decoration-color: transparent;
+        text-underline-offset: 4px;
     }
-
-    .hotline-box:last-child {
-        border-right: none;
+    .mediator-footer-links a:hover, .mediator-footer-links a:focus-visible {
+        color: #2f7068;
+        text-decoration-color: currentColor;
     }
-
-    .hotline-box h3 {
-        color: #D91616;
-        font-weight: bold;
-        margin-bottom: 20px;
+    .mediator-footer-bottom {
+        width: min(1160px, calc(100% - 44px));
+        margin: 0 auto;
+        padding: 14px 0 18px;
+        border-top: 1px solid #d2d9d1;
+        color: #68746f;
+        font-size: .78rem;
     }
-
-    .hotline-item {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 15px;
-    }
-
-    .hotline-item i {
-        font-size: 24px;
-        color: #333;
-        margin-right: 10px;
-    }
-
-    .hotline-item div {
-        text-align: left;
-        font-size: 14px;
-        color: #D91616;
-    }
-
-    .hotline-btn {
-        background-color: #D91616;
-        color: white;
-        border: none;
-        padding: 8px 14px;
-        border-radius: 4px;
-        margin-top: 10px;
-        cursor: pointer;
-    }
-
-    .hotline-btn:hover {
-        background-color: #880000;
-    }
-
-
-
-    .footer-container {
-        display: flex;
-        justify-content: space-between;
-        max-width: 100%;
-        flex-wrap: wrap;
-        margin: auto;
-    }
-
-    .footer-column {
-        flex: 1 1 30%;
-        min-width: 400px;
-        margin: 10px 0px 50px 40px;
-
-    }
-
-    .footer-column h4 {
-        margin-bottom: 30px;
-        font-weight: bold;
-    }
-
-    .footer-column p,
-    .footer-column ul {
-        font-size: 14px;
-        line-height: 1.6;
-    }
-
-    .footer-column ul {
-        list-style: none;
-        padding: 0;
-    }
-
-    .footer-column ul li {
-        margin-bottom: 8px;
-    }
-
-    .social-icons {
-        margin-bottom: 12px;
-    }
-
-    .social-icons i {
-        font-size: 20px;
-        margin-right: 10px;
-        border-radius: 10px;
-        color: white;
-    }
-
-
-    .social-icons .facebook {
-        background-color: #1877f2;
-        padding: 10px;
-    }
-
-    .social-icons .tiktok {
-        background-color: #000;
-        padding: 10px;
-    }
-
-    .social-icons .telegram {
-        background-color: #24A1DE;
-        padding: 10px;
-    }
-
-    .social-icons .instagram {
-        background: radial-gradient(circle at 30% 107%,
-                #fdf497 0%,
-                #fdf497 5%,
-                #fd5949 45%,
-                #d6249f 60%,
-                #285AEB 90%);
-        display: inline-block;
-        padding: 10px;
-    }
-
-    .qr-and-apps {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .qr-and-apps img {
-        height: 100px;
-    }
-
-    .app-links img {
-        width: 130px;
-        display: block;
-        height: 60px;
-    }
-
-    @media (max-width: 768px) {
-        .hotline-section {
-            flex-direction: column;
-        }
-
-        .hotline-box {
-            border-right: none;
-            border-bottom: 1px solid #ddd;
-            padding: 20px 0;
-        }
-
-        .hotline-box:last-child {
-            border-bottom: none;
-        }
-
-        .footer-container {
-            flex-direction: column;
-            padding: 20px;
-        }
-
-        .footer-column {
-            min-width: 100%;
-            margin: 10px 0 20px 0;
-        }
-
-        .qr-and-apps {
-            flex-direction: column;
-            align-items: flex-start;
-        }
+    @media (max-width: 560px) {
+        .mediator-footer-inner { grid-template-columns: 1fr; gap: 24px; width: calc(100% - 32px); padding-top: 28px; }
+        .mediator-footer-bottom { width: calc(100% - 32px); }
     }
 </style>
-
-<footer class="footer-new">
-
-    <!-- Hotline -->
-
-    <!-- Thông tin & liên kết -->
-    <div class="footer-container">
-
-        <!-- Cột 1: About -->
-        <div class="footer-column">
-            <h4><?= $lang['footer_about_us']; ?></h4>
-            <p>
-                <strong><?= $lang['footer_company_full']; ?></strong><br>
-                <?= $lang['footer_phone']; ?><br>
-                <?= $lang['footer_email_job_seeker']; ?><br>
-                <?= $lang['footer_email_employer']; ?>
-            </p>
-        </div>
-
-        <!-- Cột 2: Information -->
-
-        <!-- Cột 3: Kết nối & App -->
-
+<footer class="mediator-site-footer">
+    <div class="mediator-footer-inner">
+        <section>
+            <h2 class="mediator-footer-brand">Mediato</h2>
+            <p class="mediator-footer-copy">Mediato giúp bạn tham khảo hồ sơ hòa giải viên và gửi yêu cầu đặt lịch. Hình thức và địa điểm tư vấn cần được xác nhận với hòa giải viên trước buổi hẹn.</p>
+        </section>
+        <nav aria-label="Liên kết cuối trang">
+            <h2 class="mediator-footer-heading">Khám phá</h2>
+            <div class="mediator-footer-links">
+                <a href="index.php">Trang chủ</a>
+                <a href="searchpage.php">Tìm hòa giải viên</a>
+                <a href="feedback_jobseeker.php">Gửi góp ý</a>
+            </div>
+        </nav>
     </div>
+    <div class="mediator-footer-bottom">Thông tin hồ sơ chỉ nhằm mục đích tham khảo, không thay thế tư vấn pháp lý.</div>
 </footer>
-</html>

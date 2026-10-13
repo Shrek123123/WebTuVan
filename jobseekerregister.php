@@ -1,5 +1,69 @@
 <?php
 session_start();
+$conn = null;
+require_once __DIR__ . '/config.php';
+$language = in_array($_SESSION['lang'] ?? 'vi', ['vi', 'en'], true) ? $_SESSION['lang'] : 'vi';
+$_SESSION['lang'] = $language;
+include __DIR__ . '/lang/' . $language . '.php';
+$registrationError = '';
+$requestedRedirect = trim((string) ($_GET['redirect'] ?? $_POST['redirect'] ?? ''));
+$redirectTarget = null;
+$parsedRedirect = $requestedRedirect !== '' && strlen($requestedRedirect) <= 2048 ? parse_url($requestedRedirect) : false;
+if ($parsedRedirect !== false && empty($parsedRedirect['host']) && empty($parsedRedirect['scheme'])
+  && strpos($requestedRedirect, '//') !== 0 && !preg_match('/[\r\n\x00-\x1F\x7F]/', $requestedRedirect)) {
+  $redirectTarget = $requestedRedirect;
+}
+if (empty($_SESSION['customer_register_csrf'])) {
+  $_SESSION['customer_register_csrf'] = bin2hex(random_bytes(32));
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $fullName = trim((string) ($_POST['full_name'] ?? ''));
+  $email = trim((string) ($_POST['email'] ?? ''));
+  $phone = trim((string) ($_POST['phonenumber'] ?? ''));
+  $password = (string) ($_POST['password'] ?? '');
+  $retypePassword = (string) ($_POST['retypepass'] ?? '');
+  $csrfToken = (string) ($_POST['csrf_token'] ?? '');
+
+  if (!hash_equals((string) $_SESSION['customer_register_csrf'], $csrfToken)) {
+    $registrationError = 'Phiên đăng ký không hợp lệ. Vui lòng tải lại trang và thử lại.';
+  } elseif ($fullName === '' || strlen($fullName) > 100 || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 100 || $phone === '' || strlen($phone) > 20) {
+    $registrationError = 'Vui lòng nhập họ tên, email và số điện thoại hợp lệ.';
+  } elseif (strlen($password) < 8) {
+    $registrationError = 'Mật khẩu cần có ít nhất 8 ký tự.';
+  } elseif ($password !== $retypePassword) {
+    $registrationError = 'Mật khẩu nhập lại không khớp.';
+  } elseif (($_POST['terms'] ?? '') !== 'accepted') {
+    $registrationError = 'Vui lòng đồng ý với điều khoản sử dụng.';
+  } else {
+    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+    $stmt = $conn->prepare("INSERT INTO users (full_name, email, phone, password_hash, role) VALUES (?, ?, ?, ?, 'customer')");
+    if (!$stmt) {
+      throw new RuntimeException('Không thể chuẩn bị yêu cầu đăng ký: ' . $conn->error);
+    }
+    $stmt->bind_param('ssss', $fullName, $email, $phone, $passwordHash);
+    try {
+      $stmt->execute();
+      $customerId = (int) $conn->insert_id;
+      session_regenerate_id(true);
+      $_SESSION['customer_id'] = $customerId;
+      $_SESSION['jobseeker_id'] = $customerId;
+      $_SESSION['username'] = $fullName;
+      $_SESSION['role'] = 'jobseeker';
+      unset($_SESSION['customer_register_csrf']);
+      header('Location: ' . ($redirectTarget ?? 'bookings.php'));
+      exit();
+    } catch (mysqli_sql_exception $exception) {
+      if ((int) $exception->getCode() === 1062) {
+        $registrationError = 'Email này đã được đăng ký. Vui lòng đăng nhập hoặc sử dụng email khác.';
+      } else {
+        throw $exception;
+      }
+    } finally {
+      $stmt->close();
+    }
+  }
+}
 ?>
 <!DOCTYPE html>
 
@@ -141,6 +205,7 @@ session_start();
       display: none;
     }
   </style>
+    <link rel="stylesheet" href="mediato-theme.css?v=6">
 </head>
 
 <body>
@@ -149,10 +214,16 @@ session_start();
     <div class="register-form-container">
       <h2><?php echo $lang['jobseekerregister_title']; ?></h2>
       <p><?php echo $lang['jobseekerregister_subtitle']; ?></p>
-      <form action="jobseekerregister.php" method="post">
+      <?php if ($registrationError !== ''): ?>
+        <p role="alert" style="color: #9f2727;"><?= htmlspecialchars($registrationError, ENT_QUOTES, 'UTF-8') ?></p>
+      <?php endif; ?>
+      <?php $registerAction = 'jobseekerregister.php' . ($redirectTarget !== null ? '?redirect=' . rawurlencode($redirectTarget) : ''); ?>
+      <form action="<?= htmlspecialchars($registerAction, ENT_QUOTES, 'UTF-8') ?>" method="post">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['customer_register_csrf'], ENT_QUOTES, 'UTF-8') ?>">
+        <?php if ($redirectTarget !== null): ?><input type="hidden" name="redirect" value="<?= htmlspecialchars($redirectTarget, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
         <div class="form-group">
-          <label><?php echo $lang['username']; ?></label>
-          <input type="text" placeholder="<?php echo $lang['placeholder_username']; ?>" name="username" required>
+          <label>Họ và tên</label>
+          <input type="text" placeholder="Họ tên của bạn" name="full_name" maxlength="100" required>
         </div>
         <div class="form-group">
           <label><?php echo $lang['email']; ?></label>
@@ -160,12 +231,12 @@ session_start();
         </div>
         <div class="form-group">
           <label><?php echo $lang['phone_number_register']; ?></label>
-          <input type="tel" placeholder="<?php echo $lang['placeholder_phone_number_register']; ?>" name="phonenumber">
+          <input type="tel" placeholder="<?php echo $lang['placeholder_phone_number_register']; ?>" name="phonenumber" maxlength="20" required>
         </div>
         <div class="form-group">
           <label><?php echo $lang['password']; ?></label>
           <div class="password-toggle-wrapper">
-            <input type="password" placeholder="<?php echo $lang['placeholder_password']; ?>" name="password" required>
+            <input type="password" placeholder="<?php echo $lang['placeholder_password']; ?>" name="password" minlength="8" required>
             <button type="button" class="toggle-password" data-target="password"
               aria-label="Toggle password visibility" aria-pressed="false">👁</button>
           </div>
@@ -174,7 +245,7 @@ session_start();
           <label><?php echo $lang['reenter_password']; ?></label>
           <div class="password-toggle-wrapper">
             <input type="password" placeholder="<?php echo $lang['placeholder_reenter_password']; ?>" name="retypepass"
-              required>
+              minlength="8" required>
             <button type="button" class="toggle-password" data-target="retypepass"
               aria-label="Toggle password visibility" aria-pressed="false">👁</button>
           </div>
@@ -192,11 +263,7 @@ session_start();
       </form>
       <div class="login-link">
         <?php echo $lang['login_link_text_prefix']; ?> <a
-          href="jobseekerlogin.php"><?php echo $lang['login_link_text']; ?></a>
-      </div>
-      <div class="redirect-employer">
-        <p><?php echo $lang['employer_redirect_text_prefix']; ?> <a
-            href="employerpage.php"><?php echo $lang['employer_redirect_link_text']; ?></a></p>
+          href="jobseekerlogin.php<?= $redirectTarget !== null ? '?redirect=' . rawurlencode($redirectTarget) : '' ?>"><?php echo $lang['login_link_text']; ?></a>
       </div>
     </div>
   </div>
@@ -205,82 +272,6 @@ session_start();
 </html>
 
 <?php
-require_once('config.php');
-require_once __DIR__ . '/helpers.php';
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  $username = $_POST['username'];
-  $email = $_POST['email'];
-  $password = $_POST['password'];
-  $retypepass = $_POST['retypepass'];
-
-  if (empty($username) || empty($email) || empty($password) || empty($retypepass)) {
-    echo "<script>alert('All fields are required.'); window.history.back();</script>";
-    exit;
-  }
-
-  if ($password !== $retypepass) {
-    echo "<script>
-      const passwordField = document.querySelector('input[name=\"password\"]');
-      const errorTooltip = document.createElement('div');
-      errorTooltip.textContent = 'Passwords do not match';
-      errorTooltip.style.position = 'absolute';
-      errorTooltip.style.backgroundColor = '#f8d7da';
-      errorTooltip.style.color = '#721c24';
-      errorTooltip.style.padding = '5px';
-      errorTooltip.style.border = '1px solid #f5c6cb';
-      errorTooltip.style.borderRadius = '5px';
-      errorTooltip.style.marginTop = '5px';
-      errorTooltip.style.fontSize = '12px';
-      passwordField.parentNode.appendChild(errorTooltip);
-      passwordField.focus();
-      setTimeout(() => { errorTooltip.remove(); }, 3000);
-    </script>";
-    exit;
-  }
-
-  $stmt = $conn->prepare("SELECT * FROM user WHERE email = ?");
-  $stmt->bind_param("s", $email);
-  $stmt->execute();
-  $result = $stmt->get_result();
-
-  if ($result->num_rows > 0) {
-    echo "<script>
-      const emailField = document.querySelector('input[name=\"email\"]');
-      const errorTooltip = document.createElement('div');
-      errorTooltip.textContent = " . json_encode($lang['email_exists']) . ";
-      errorTooltip.style.position = 'absolute';
-      errorTooltip.style.backgroundColor = '#f8d7da';
-      errorTooltip.style.color = '#721c24';
-      errorTooltip.style.padding = '5px';
-      errorTooltip.style.border = '1px solid #f5c6cb';
-      errorTooltip.style.borderRadius = '5px';
-      errorTooltip.style.marginTop = '5px';
-      errorTooltip.style.fontSize = '12px';
-      emailField.parentNode.appendChild(errorTooltip);
-      emailField.focus();
-      setTimeout(() => { errorTooltip.remove(); }, 10000);
-    </script>";
-    exit;
-  }
-
-  $phone_number = !empty($_POST['phonenumber']) ? trim($_POST['phonenumber']) : NULL;
-
-  $stmt = $conn->prepare("INSERT INTO user (username, user_type, email, password, phone_number) VALUES (?, 'jobseeker', ?, ?, ?)");
-  $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-  $stmt->bind_param("ssss", $username, $email, $hashed_password, $phone_number);
-
-  if ($stmt->execute()) {
-    sendRegistrationSuccessEmail($email, 'jobseeker', 'jobseekerlogin.php');
-    echo "<script>alert('" . addslashes($lang['registration_successful']) . "'); window.location.href = 'jobseekerlogin.php';</script>";
-    exit;
-  } else {
-    echo "<script>alert('Error: " . $stmt->error . "');</script>";
-    exit;
-  }
-}
-
-$conn->close();
 ?>
 
 <script>

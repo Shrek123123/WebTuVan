@@ -974,6 +974,7 @@ foreach (['company_logo_preview' => $company_logo_preview, 'banner_logo_preview'
             background: #b23b3b; color: #fff !important; transform: translateY(-1px);
         }
     </style>
+    <link rel="stylesheet" href="../mediato-theme.css?v=6">
 </head>
 
 

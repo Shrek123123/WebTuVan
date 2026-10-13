@@ -1,5 +1,8 @@
 <?php
 session_start();
+if (empty($_SESSION['customer_password_reset_csrf'])) {
+    $_SESSION['customer_password_reset_csrf'] = bin2hex(random_bytes(32));
+}
 require_once __DIR__ . '/config.php';
 
 if (!isset($_SESSION['jobseeker_password_reset_user_id']) && !isset($_SESSION['jobseeker_password_reset_verified_user_id'])) {
@@ -7,10 +10,10 @@ if (!isset($_SESSION['jobseeker_password_reset_user_id']) && !isset($_SESSION['j
     exit();
 }
 
-if (isset($_GET['lang'])) {
+if (isset($_GET['lang']) && in_array($_GET['lang'], ['vi', 'en'], true)) {
     $_SESSION['lang'] = $_GET['lang'];
 }
-if (!isset($_SESSION['lang'])) {
+if (!in_array($_SESSION['lang'] ?? 'vi', ['vi', 'en'], true)) {
     $_SESSION['lang'] = 'vi';
 }
 include __DIR__ . '/lang/' . basename($_SESSION['lang']) . '.php';
@@ -49,6 +52,7 @@ $isVerified = isset($_SESSION['jobseeker_password_reset_verified_user_id']);
         .password-wrap input { padding-right: 46px; }
         .toggle-password { position: absolute; top: 50%; right: 8px; width: 34px; height: 34px; transform: translateY(-50%); border: 0; border-radius: 6px; background: transparent; color: #667085; cursor: pointer; font-size: 18px; }
     </style>
+    <link rel="stylesheet" href="mediato-theme.css?v=6">
 </head>
 <body>
     <main class="recovery-shell">
@@ -79,9 +83,9 @@ $isVerified = isset($_SESSION['jobseeker_password_reset_verified_user_id']);
             <p><?= htmlspecialchars($lang['new_password'] ?? 'Enter your new password.', ENT_QUOTES, 'UTF-8') ?></p>
             <form id="password-form">
                 <label for="new-password"><?= htmlspecialchars($lang['new_password'] ?? 'New password', ENT_QUOTES, 'UTF-8') ?></label>
-                <div class="password-wrap"><input id="new-password" name="new_password" type="password" minlength="6" autocomplete="new-password" required><button type="button" class="toggle-password" data-target="new-password" aria-label="Show password">&#128065;</button></div>
+                <div class="password-wrap"><input id="new-password" name="new_password" type="password" minlength="8" autocomplete="new-password" required><button type="button" class="toggle-password" data-target="new-password" aria-label="Show password">&#128065;</button></div>
                 <label for="confirm-password"><?= htmlspecialchars($lang['confirm_password'] ?? 'Confirm password', ENT_QUOTES, 'UTF-8') ?></label>
-                <div class="password-wrap"><input id="confirm-password" name="confirm_password" type="password" minlength="6" autocomplete="new-password" required><button type="button" class="toggle-password" data-target="confirm-password" aria-label="Show password">&#128065;</button></div>
+                <div class="password-wrap"><input id="confirm-password" name="confirm_password" type="password" minlength="8" autocomplete="new-password" required><button type="button" class="toggle-password" data-target="confirm-password" aria-label="Show password">&#128065;</button></div>
                 <p class="message" id="password-message" role="alert"></p>
                 <button class="primary-button" type="submit" id="reset-password"><?= htmlspecialchars($lang['reset_password'] ?? 'Reset password', ENT_QUOTES, 'UTF-8') ?></button>
             </form>
@@ -102,7 +106,7 @@ $isVerified = isset($_SESSION['jobseeker_password_reset_verified_user_id']);
             let resendTimer = null;
 
             async function sendAction(action, values) {
-                const body = new URLSearchParams({ action, ...(values || {}) });
+                const body = new URLSearchParams({ action, csrf_token: <?= json_encode($_SESSION['customer_password_reset_csrf']) ?>, ...(values || {}) });
                 const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
                 return response.json();
             }

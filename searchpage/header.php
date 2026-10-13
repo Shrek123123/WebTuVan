@@ -3,35 +3,20 @@ require_once __DIR__ . '/../config.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-// Nếu người dùng bấm đổi ngôn ngữ
-if (isset($_GET['lang'])) {
+if (isset($_GET['lang']) && in_array($_GET['lang'], ['vi', 'en'], true)) {
     $_SESSION['lang'] = $_GET['lang'];
 }
-
-// Nếu chưa có ngôn ngữ thì mặc định là tiếng Việt
-if (!isset($_SESSION['lang'])) {
-    $_SESSION['lang'] = 'vi';
+$language = $_SESSION['lang'] ?? 'vi';
+if (!in_array($language, ['vi', 'en'], true)) {
+    $language = 'vi';
 }
-
-// Load file ngôn ngữ tương ứng
-include __DIR__ . '/../lang/' . $_SESSION['lang'] . '.php';
-$jobseeker_id = isset($_SESSION['jobseeker_id']) ? intval($_SESSION['jobseeker_id']) : 0;
-$user_data = null;
-if ($jobseeker_id > 0) {
-    $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-    if (!$conn->connect_error) {
-        $sql = "SELECT username FROM user WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $jobseeker_id);
-        $stmt->execute();
-        $stmt->bind_result($username);
-        if ($stmt->fetch()) {
-            $user_data = $username;
-        }
-        $stmt->close();
-        $conn->close();
-    }
-}
+$_SESSION['lang'] = $language;
+include __DIR__ . '/../lang/' . $language . '.php';
+$jobseeker_id = (int) ($_SESSION['customer_id'] ?? $_SESSION['jobseeker_id'] ?? 0);
+$isCustomer = in_array($_SESSION['role'] ?? '', ['customer', 'jobseeker'], true);
+$user_data = $isCustomer ? (string) ($_SESSION['username'] ?? '') : null;
+$username = $user_data;
+$profilePic = 'image/defaultavatar.jpg';
 ?>
 <style>
     .loggined_option {
@@ -144,13 +129,6 @@ if ($jobseeker_id > 0) {
         justify-content: space-between;
         align-items: center;
         width: 100%;
-    }
-
-    .header a:hover,
-    .header .guest-options a:hover,
-    .header .dropdown-menu a:hover {
-        color: #d70018 !important;
-        transition: color 0.1s;
     }
 
     .guest-options {
@@ -378,7 +356,7 @@ if ($jobseeker_id > 0) {
         .mobile-login-btn {
             display: inline-block;
             padding: 8px 12px;
-            color: #d90000;
+            color: #2f7068;
             font-weight: bold;
             white-space: nowrap;
         }
@@ -411,57 +389,189 @@ if ($jobseeker_id > 0) {
             right: 0;
         }
     }
+    :root {
+        --mediator-paper: #f5f3ed;
+        --mediator-ink: #1d302f;
+        --mediator-teal: #2f7068;
+        --mediator-terracotta: #a75e49;
+        --mediator-muted: #5e6d69;
+        --mediator-line: #dce1da;
+    }
+
+    body {
+        background: var(--mediator-paper);
+        color: var(--mediator-ink);
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .header {
+        position: sticky;
+        top: 0;
+        min-height: 76px;
+        padding: 10px max(22px, calc((100vw - 1160px) / 2));
+        border-bottom: 1px solid var(--mediator-line);
+        background: rgba(250, 249, 245, .98);
+        box-shadow: 0 4px 16px rgba(29, 48, 47, .035);
+        z-index: 2000;
+    }
+
+    .logo-wrap { flex: 0 0 auto; }
+    .logo-wrap a { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo-wrap img { display: none; }
+    .mediator-brand-mark {
+        display: grid;
+        width: 43px;
+        height: 43px;
+        place-items: center;
+        border: 1px solid #a9c0b8;
+        background: #e9f0eb;
+        color: var(--mediator-teal);
+        font: 600 1.05rem Georgia, 'Times New Roman', serif;
+    }
+    .mediator-brand-name {
+        color: var(--mediator-ink);
+        font: 600 1.05rem/1.15 Georgia, 'Times New Roman', serif;
+        white-space: nowrap;
+    }
+    .mediator-brand-name small {
+        display: block;
+        margin-top: 4px;
+        color: var(--mediator-muted);
+        font: 700 .58rem/1 Arial, Helvetica, sans-serif;
+        letter-spacing: .13em;
+        text-transform: uppercase;
+    }
+    .header-nav { gap: 24px; }
+    .header-nav-links { gap: 24px; margin-left: 32px; }
+    .header-nav-links a, .header .ra_trang_ntd {
+        color: var(--mediator-ink) !important;
+        font-size: .91rem;
+        text-decoration: none !important;
+    }
+    .header a:hover, .header .guest-options a:hover, .header .dropdown-menu a:hover {
+        color: var(--mediator-teal) !important;
+    }
+    .guest-options { align-items: center; gap: 10px; margin-right: 0; }
+    .header .btn-login, .header .btn-register {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+        padding: 0 15px;
+        border: 1px solid var(--mediator-line);
+        color: var(--mediator-ink);
+        font-size: .87rem;
+        font-weight: 700;
+        text-decoration: none;
+    }
+    .header .btn-login { border-color: var(--mediator-ink); background: var(--mediator-ink); color: #fff; }
+    .header .btn-register { background: transparent; }
+    .header #lang-switch-btn {
+        margin: 0;
+        padding: 8px 10px;
+        border: 0;
+        background: transparent;
+        color: var(--mediator-muted);
+        font: inherit;
+        font-size: .82rem;
+        cursor: pointer;
+    }
+    .header .user-info { margin-right: 0; }
+    .header .user-info img { width: 38px; height: 38px; border: 1px solid var(--mediator-line); }
+    .header .user-dropdown:focus-within .dropdown-menu { display: flex; }
+    .header .dropdown-menu {
+        min-width: 180px;
+        border-color: var(--mediator-line);
+        border-radius: 0;
+        box-shadow: 0 12px 28px rgba(29, 48, 47, .12);
+    }
+    .header .dropdown-menu a { color: var(--mediator-ink); }
+    .menu-toggle { position: relative; z-index: 2002; border: 1px solid var(--mediator-line); }
+    .menu-toggle span { background: var(--mediator-ink); }
+    .sidebar-overlay { background: rgba(20, 34, 33, .38); }
+    .header a:focus-visible, .header button:focus-visible, .menu-toggle:focus-visible {
+        outline: 3px solid rgba(47, 112, 104, .42);
+        outline-offset: 3px;
+    }
+
+    @media (max-width: 900px) {
+        .header { padding-right: 16px; padding-left: 16px; }
+        .header-nav-links { margin-left: 16px; gap: 15px; }
+        .header .btn-register { display: none; }
+    }
+
+    @media (max-width: 768px) {
+        .header { min-height: 66px; padding: 8px 14px; }
+        .logo-wrap img { display: none !important; }
+        .mediator-brand-mark { width: 39px; height: 39px; }
+        .mediator-brand-name { font-size: .96rem; }
+        .menu-toggle { width: 40px; height: 40px; flex: 0 0 40px; margin-right: 10px; }
+        .header-nav {
+            top: 0;
+            width: min(320px, calc(100vw - 44px));
+            max-width: none;
+            padding: 82px 0 24px;
+            border-right: 1px solid var(--mediator-line);
+            background: #faf9f5;
+            box-shadow: 12px 0 30px rgba(29, 48, 47, .12);
+        }
+        .header-nav-links a, .loggined_option .ra_trang_ntd,
+        .guest-options .btn-register, .header-nav .user-info {
+            padding: 15px 22px;
+            border-bottom: 1px solid var(--mediator-line);
+        }
+        .loggined_option { margin: 0; }
+        .header-nav .guest-options .btn-login { display: flex; margin: 14px 18px 0; }
+        .header-nav .guest-options .btn-register { display: flex; margin: 8px 18px 0; border: 1px solid var(--mediator-line); }
+        .header-nav #lang-switch-btn { width: 100%; padding: 15px 22px; border-bottom: 1px solid var(--mediator-line); text-align: left; }
+        .header-right .mobile-login-btn {
+            padding: 9px 12px;
+            border: 1px solid var(--mediator-ink);
+            background: var(--mediator-ink);
+            color: #fff;
+            font-size: .82rem;
+        }
+    }
+
+    @media (max-width: 390px) {
+        .header { padding-right: 10px; padding-left: 10px; }
+        .mediator-brand-mark { width: 35px; height: 35px; }
+        .mediator-brand-name { font-size: .88rem; }
+        .header-right .mobile-login-btn { padding: 8px 9px; }
+    }
 </style>
 
 <div class="header">
-    <button class="menu-toggle" id="menu-toggle" aria-label="Menu">
+    <button class="menu-toggle" id="menu-toggle" aria-label="Mở menu" aria-controls="header-nav" aria-expanded="false">
         <span></span>
         <span></span>
         <span></span>
     </button>
     <div class="logo-wrap">
         <a href="index.php">
-            <img src="image/logo.png" alt="ViecNhe Logo" style="height: 50px; margin-right: 10px;">
+            <span class="mediator-brand-mark" aria-hidden="true">M</span>
+            <span class="mediator-brand-name">Mediato<small>Đồng hành hòa giải</small></span>
         </a>
     </div>
 
-    <div class="header-nav" id="header-nav">
+    <nav class="header-nav" id="header-nav" aria-label="Điều hướng chính">
         <div class="header-nav-links">
-            <a href="#" style="text-decoration: none; color: #333;">
-                <?= $lang['create_cv']; ?>
+            <a href="index.php">
+                Trang chủ
+            </a>
+            <a href="searchpage.php">
+                Tìm hòa giải viên
             </a>
             <!-- <a href="contactus_jobseeker.php" style="text-decoration: none; color: #333;">
                 <?= $lang['contact_us']; ?>
             </a> -->
-            <a href="feedback_jobseeker.php" style="text-decoration: none; color: #333;">
-                <?= $lang['feedback']; ?>
-            </a>
         </div>
 
         <div class="loggined_option">
-        <?php if (isset($_SESSION['username'])): ?>
-            <a class="ra_trang_ntd" href="employerpage.php"><?= $lang['Ra_trang_nha_tuyen_dung']; ?></a>
+        <?php if ($isCustomer): ?>
+            <a class="ra_trang_ntd" href="bookings.php">Lịch tư vấn</a>
             <div class="user-dropdown">
                 <div class="user-info">
-                    <?php
-                    $profilePic = "image/defaultavatar.jpg"; // ảnh mặc định
-                    if (isset($_SESSION['jobseeker_id'])) {
-                        $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-
-                        if (!$conn->connect_error) {
-                            $sql = "SELECT profile_pic FROM ho_so_khach_hang WHERE jobseeker_id = ?";
-                            $stmt = $conn->prepare($sql);
-                            $stmt->bind_param("i", $jobseeker_id);
-                            $stmt->execute();
-                            $stmt->bind_result($pic);
-                            if ($stmt->fetch() && !empty($pic)) {
-                                // Nếu ảnh đã có 'uploads/' ở đầu thì giữ nguyên, nếu không thì thêm vào
-                                $profilePic = (strpos($pic, 'uploads/') === 0) ? $pic : 'uploads/' . basename($pic);
-                            }
-                            $stmt->close();
-                        }
-                    }
-                    ?>
                     <img src="<?= htmlspecialchars($profilePic); ?>" alt="User Avatar">
                     <span><?= htmlspecialchars($username ?? 'Người dùng'); ?></span>
                 </div>
@@ -469,8 +579,8 @@ if ($jobseeker_id > 0) {
                     <?php
                     $jobseekerId = isset($_SESSION['jobseeker_id']) ? intval($_SESSION['jobseeker_id']) : 0;
                     ?>
-                    <a href="jobseekerprofile/ho_so_ung_vien.php">
-                        <?= $lang['profile']; ?>
+                    <a href="bookings.php">
+                        Lịch tư vấn
                     </a>
                     <a href="jobseekerlogout.php">
                         <?= $lang['logout']; ?>
@@ -480,10 +590,10 @@ if ($jobseeker_id > 0) {
         <?php else: ?>
             <div class="guest-options">
                 <a href="jobseekerlogin.php" class="btn-login">
-                    <?= $lang['login/register_jobseeker']; ?>
+                    Đăng nhập
                 </a>
-                <a href="employerpage.php" class="btn-register">
-                    <?= $lang['employer_redirect']; ?>
+                <a href="jobseekerregister.php" class="btn-register">
+                    Tạo tài khoản
                 </a>
 
             </div>
@@ -493,18 +603,18 @@ if ($jobseeker_id > 0) {
         <button id="lang-switch-btn">
             <?php echo ($_SESSION['lang'] === 'vi') ? 'English' : 'Tiếng Việt'; ?>
         </button>
-    </div>
+    </nav>
 
         <div class="header-right">
-        <?php if (isset($_SESSION['username'])): ?>
+        <?php if ($isCustomer): ?>
             <div class="user-dropdown">
                 <div class="user-info">
                     <img src="<?= htmlspecialchars($profilePic); ?>" alt="User Avatar">
                     <span><?= htmlspecialchars($username ?? 'Người dùng'); ?></span>
                 </div>
                 <div class="dropdown-menu">
-                    <a href="jobseekerprofile/ho_so_ung_vien.php">
-                        <?= $lang['profile']; ?>
+                    <a href="bookings.php">
+                        Lịch tư vấn
                     </a>
                     <a href="jobseekerlogout.php">
                         <?= $lang['logout']; ?>
@@ -513,7 +623,7 @@ if ($jobseeker_id > 0) {
             </div>
         <?php else: ?>
             <a href="jobseekerlogin.php" class="btn-login mobile-login-btn">
-                <?= $lang['login']; ?>
+                Đăng nhập
             </a>
         <?php endif; ?>
     </div>
@@ -528,14 +638,23 @@ if ($jobseeker_id > 0) {
         function closeMenu() {
             if (sidebar) sidebar.classList.remove('active');
             if (overlay) overlay.classList.remove('active');
+            if (toggle) {
+                toggle.setAttribute('aria-expanded', 'false');
+                toggle.setAttribute('aria-label', 'Mở menu');
+            }
         }
 
         if (toggle && sidebar && overlay) {
             toggle.addEventListener('click', function () {
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
+                var isOpen = sidebar.classList.toggle('active');
+                overlay.classList.toggle('active', isOpen);
+                toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                toggle.setAttribute('aria-label', isOpen ? 'Đóng menu' : 'Mở menu');
             });
             overlay.addEventListener('click', closeMenu);
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') closeMenu();
+            });
         }
 
         var langBtn = document.getElementById('lang-switch-btn');

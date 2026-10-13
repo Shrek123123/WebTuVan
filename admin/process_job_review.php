@@ -1,4 +1,8 @@
 <?php
+session_start();
+header('Location: ' . (isset($_SESSION['usernameadmin']) ? 'admindashboard.php' : '../index.php'), true, 302);
+exit;
+
 // admin/process_job_review.php
 session_start();
 require_once '../config.php'; // Điều chỉnh đường dẫn đến config.php

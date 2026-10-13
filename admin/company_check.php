@@ -1,4 +1,8 @@
 <?php
+session_start();
+header('Location: ' . (isset($_SESSION['usernameadmin']) ? 'admindashboard.php' : '../index.php'), true, 302);
+exit;
+
 // admin/company_check.php
 session_start();
 require_once __DIR__ . '/../config.php';
@@ -702,6 +706,7 @@ $conn->close();
             cursor: wait;
         }
     </style>
+    <link rel="stylesheet" href="../mediato-theme.css?v=6">
 </head>
 <body>
     <?php include __DIR__ . '/mobile_sidebar.php'; ?>

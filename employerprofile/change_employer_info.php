@@ -744,6 +744,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_employer_profi
             background: #b23b3b; color: #fff !important; transform: translateY(-1px);
         }
     </style>
+    <link rel="stylesheet" href="../mediato-theme.css?v=6">
 </head>
 
 

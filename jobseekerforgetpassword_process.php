@@ -26,22 +26,16 @@ $otpInvalid = $lang['otp_invalid'] ?? 'The verification code is invalid.';
 $otpSent = $lang['otp_sent'] ?? 'A verification code has been sent to your email.';
 $otpResent = $lang['otp_resent'] ?? 'A new verification code has been sent.';
 $passwordMismatch = $lang['password_mismatch'] ?? 'Passwords do not match.';
-$passwordTooShort = $lang['password_min_length'] ?? 'Password must be at least 6 characters.';
+$passwordTooShort = 'Mật khẩu cần có ít nhất 8 ký tự.';
 $passwordResetSuccess = $lang['password_reset_success'] ?? 'Your password has been reset successfully.';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $respond(false, $genericError);
 }
-
-$conn->query("CREATE TABLE IF NOT EXISTS password_reset (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    user_id INT UNSIGNED NOT NULL,
-    otp_hash VARCHAR(255) NOT NULL,
-    attempts TINYINT UNSIGNED NOT NULL DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY unique_password_reset_user (user_id),
-    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
-)");
+if (empty($_SESSION['customer_password_reset_csrf'])
+    || !hash_equals((string) $_SESSION['customer_password_reset_csrf'], (string) ($_POST['csrf_token'] ?? ''))) {
+    $respond(false, $genericError);
+}
 
 if ($action === 'send_otp') {
     $email = trim((string) ($_POST['email'] ?? ''));
@@ -49,7 +43,7 @@ if ($action === 'send_otp') {
         $respond(false, $noEmailFound);
     }
 
-    $stmt = $conn->prepare("SELECT id, email FROM user WHERE email = ? AND user_type = 'jobseeker' LIMIT 1");
+    $stmt = $conn->prepare("SELECT id, email FROM users WHERE email = ? AND role = 'customer' AND status = 'active' LIMIT 1");
     if (!$stmt) {
         $respond(false, $genericError);
     }
@@ -70,7 +64,7 @@ if ($action === 'send_otp') {
 
     $userId = (int) $user['id'];
     $otpHash = password_hash($otp, PASSWORD_DEFAULT);
-    $resetStmt = $conn->prepare('INSERT INTO password_reset (user_id, otp_hash, attempts) VALUES (?, ?, 0) ON DUPLICATE KEY UPDATE otp_hash = VALUES(otp_hash), attempts = 0, created_at = CURRENT_TIMESTAMP');
+    $resetStmt = $conn->prepare('INSERT INTO customer_password_reset (user_id, otp_hash, attempts) VALUES (?, ?, 0) ON DUPLICATE KEY UPDATE otp_hash = VALUES(otp_hash), attempts = 0, created_at = CURRENT_TIMESTAMP');
     if (!$resetStmt) {
         $respond(false, $genericError);
     }
@@ -98,7 +92,7 @@ if ($action === 'reset_password') {
     }
 
     $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT);
-    $stmt = $conn->prepare("UPDATE user SET password = ? WHERE id = ? AND user_type = 'jobseeker'");
+    $stmt = $conn->prepare("UPDATE users SET password_hash = ? WHERE id = ? AND role = 'customer' AND status = 'active'");
     if (!$stmt) {
         $respond(false, $genericError);
     }
@@ -111,6 +105,7 @@ if ($action === 'reset_password') {
     }
 
     unset($_SESSION['jobseeker_password_reset_user_id'], $_SESSION['jobseeker_password_reset_verified_user_id']);
+    unset($_SESSION['customer_password_reset_csrf']);
     $respond(true, $passwordResetSuccess);
 }
 
@@ -119,7 +114,7 @@ if ($resetUserId <= 0) {
 }
 
 if ($action === 'resend_otp') {
-    $stmt = $conn->prepare("SELECT email FROM user WHERE id = ? AND user_type = 'jobseeker' LIMIT 1");
+    $stmt = $conn->prepare("SELECT email FROM users WHERE id = ? AND role = 'customer' AND status = 'active' LIMIT 1");
     $stmt->bind_param('i', $resetUserId);
     $stmt->execute();
     $user = $stmt->get_result()->fetch_assoc();
@@ -134,7 +129,7 @@ if ($action === 'resend_otp') {
     }
 
     $otpHash = password_hash($otp, PASSWORD_DEFAULT);
-    $stmt = $conn->prepare('UPDATE password_reset SET otp_hash = ?, attempts = 0, created_at = CURRENT_TIMESTAMP WHERE user_id = ?');
+    $stmt = $conn->prepare('UPDATE customer_password_reset SET otp_hash = ?, attempts = 0, created_at = CURRENT_TIMESTAMP WHERE user_id = ?');
     $stmt->bind_param('si', $otpHash, $resetUserId);
     $stmt->execute();
     $stmt->close();
@@ -143,7 +138,7 @@ if ($action === 'resend_otp') {
 
 if ($action === 'verify_otp') {
     $otp = trim((string) ($_POST['otp'] ?? ''));
-    $stmt = $conn->prepare('SELECT otp_hash, attempts FROM password_reset WHERE user_id = ? LIMIT 1');
+    $stmt = $conn->prepare('SELECT otp_hash, attempts FROM customer_password_reset WHERE user_id = ? LIMIT 1');
     $stmt->bind_param('i', $resetUserId);
     $stmt->execute();
     $reset = $stmt->get_result()->fetch_assoc();
@@ -151,12 +146,12 @@ if ($action === 'verify_otp') {
     if (!$reset || !preg_match('/^\d{5}$/', $otp) || !password_verify($otp, $reset['otp_hash'])) {
         $attempts = (int) ($reset['attempts'] ?? 0) + 1;
         if ($attempts >= 5) {
-            $deleteStmt = $conn->prepare('DELETE FROM password_reset WHERE user_id = ?');
+            $deleteStmt = $conn->prepare('DELETE FROM customer_password_reset WHERE user_id = ?');
             $deleteStmt->bind_param('i', $resetUserId);
             $deleteStmt->execute();
             $deleteStmt->close();
         } else {
-            $attemptStmt = $conn->prepare('UPDATE password_reset SET attempts = ? WHERE user_id = ?');
+            $attemptStmt = $conn->prepare('UPDATE customer_password_reset SET attempts = ? WHERE user_id = ?');
             $attemptStmt->bind_param('ii', $attempts, $resetUserId);
             $attemptStmt->execute();
             $attemptStmt->close();
@@ -164,7 +159,7 @@ if ($action === 'verify_otp') {
         $respond(false, $otpInvalid);
     }
 
-    $deleteStmt = $conn->prepare('DELETE FROM password_reset WHERE user_id = ?');
+    $deleteStmt = $conn->prepare('DELETE FROM customer_password_reset WHERE user_id = ?');
     $deleteStmt->bind_param('i', $resetUserId);
     $deleteStmt->execute();
     $deleteStmt->close();

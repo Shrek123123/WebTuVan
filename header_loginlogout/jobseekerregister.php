@@ -1,11 +1,11 @@
 <?php
 // Nếu người dùng bấm đổi ngôn ngữ
-if (isset($_GET['lang'])) {
+if (isset($_GET['lang']) && in_array($_GET['lang'], ['vi', 'en'], true)) {
     $_SESSION['lang'] = $_GET['lang'];
 }
 
 // Nếu chưa có ngôn ngữ thì mặc định là tiếng Việt
-if (!isset($_SESSION['lang'])) {
+if (!in_array($_SESSION['lang'] ?? 'vi', ['vi', 'en'], true)) {
     $_SESSION['lang'] = 'vi';
 }
 

@@ -1,308 +1,80 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
-
 <style>
-    .footer-new {
-        background-color: #B73C3C;
-        color: white;
-        font-family: Arial, sans-serif;
-
+    .mediator-site-footer {
+        border-top: 1px solid #dce1da;
+        background: #eaece5;
+        color: #1d302f;
+        font-family: Arial, Helvetica, sans-serif;
     }
-
-    .hotline-section {
+    .mediator-footer-inner {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(180px, .65fr);
+        gap: 42px;
+        width: min(1160px, calc(100% - 44px));
+        margin: 0 auto;
+        padding: 38px 0 26px;
+    }
+    .mediator-footer-brand {
+        margin: 0 0 9px;
+        font: 500 1.35rem Georgia, 'Times New Roman', serif;
+    }
+    .mediator-footer-copy {
+        max-width: 530px;
+        margin: 0;
+        color: #5e6d69;
+        font-size: .91rem;
+        line-height: 1.7;
+    }
+    .mediator-footer-heading {
+        margin: 2px 0 12px;
+        color: #5e6d69;
+        font-size: .7rem;
+        font-weight: 800;
+        letter-spacing: .13em;
+        text-transform: uppercase;
+    }
+    .mediator-footer-links {
         display: flex;
-        justify-content: space-around;
-        background-color: #fff;
-        padding: 30px 10px;
-        border: 1px solid #ccc;
-        border-bottom: none;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 9px;
     }
-
-    .hotline-box {
-        flex: 1;
-        padding: 0 20px;
-        text-align: center;
-        border-right: 1px solid #ddd;
+    .mediator-footer-links a {
+        color: #1d302f;
+        font-size: .9rem;
+        text-decoration-color: transparent;
+        text-underline-offset: 4px;
     }
-
-    .hotline-box:last-child {
-        border-right: none;
+    .mediator-footer-links a:hover, .mediator-footer-links a:focus-visible {
+        color: #2f7068;
+        text-decoration-color: currentColor;
     }
-
-    .hotline-box h3 {
-        color: #D91616;
-        font-weight: bold;
-        margin-bottom: 20px;
+    .mediator-footer-bottom {
+        width: min(1160px, calc(100% - 44px));
+        margin: 0 auto;
+        padding: 14px 0 18px;
+        border-top: 1px solid #d2d9d1;
+        color: #68746f;
+        font-size: .78rem;
     }
-
-    .hotline-item {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 15px;
-    }
-
-    .hotline-item i {
-        font-size: 24px;
-        color: #333;
-        margin-right: 10px;
-    }
-
-    .hotline-item div {
-        text-align: left;
-        font-size: 14px;
-        color: #D91616;
-    }
-
-    .hotline-btn {
-        background-color: #D91616;
-        color: white;
-        border: none;
-        padding: 8px 14px;
-        border-radius: 4px;
-        margin-top: 10px;
-        cursor: pointer;
-    }
-
-    .hotline-btn:hover {
-        background-color: #880000;
-    }
-
-
-
-    .footer-container {
-        display: flex;
-        justify-content: space-between;
-        max-width: 100%;
-        flex-wrap: wrap;
-        margin: auto;
-    }
-
-    .footer-column {
-        flex: 1 1 30%;
-        min-width: 400px;
-        margin: 10px 0px 50px 40px;
-
-    }
-
-    .footer-column h4 {
-        margin-bottom: 30px;
-        font-weight: bold;
-    }
-
-    .footer-column p,
-    .footer-column ul {
-        font-size: 14px;
-        line-height: 1.6;
-    }
-
-    .footer-column ul {
-        list-style: none;
-        padding: 0;
-    }
-
-    .footer-column ul li {
-        margin-bottom: 8px;
-    }
-
-    .social-icons {
-        margin-bottom: 12px;
-    }
-
-    .social-icons i {
-        font-size: 20px;
-        margin-right: 10px;
-        border-radius: 10px;
-        color: white;
-    }
-
-
-    .social-icons .facebook {
-        background-color: #1877f2;
-        padding: 10px;
-    }
-
-    .social-icons .tiktok {
-        background-color: #000;
-        padding: 10px;
-    }
-
-    .social-icons .telegram {
-        background-color: #24A1DE;
-        padding: 10px;
-    }
-
-    .social-icons .instagram {
-        background: radial-gradient(circle at 30% 107%,
-                #fdf497 0%,
-                #fdf497 5%,
-                #fd5949 45%,
-                #d6249f 60%,
-                #285AEB 90%);
-        display: inline-block;
-        padding: 10px;
-    }
-
-    .qr-and-apps {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .qr-and-apps img {
-        height: 100px;
-    }
-
-    .app-links img {
-        width: 130px;
-        display: block;
-        height: 60px;
-    }
-
-    @media (max-width: 768px) {
-        .hotline-section {
-            flex-direction: column;
-        }
-
-        .hotline-box {
-            border-right: none;
-            border-bottom: 1px solid #ddd;
-            padding: 20px 0;
-        }
-
-        .hotline-box:last-child {
-            border-bottom: none;
-        }
-
-        .footer-container {
-            flex-direction: column;
-            padding: 20px;
-        }
-
-        .footer-column {
-            min-width: 100%;
-            margin: 10px 0 20px 0;
-        }
-
-        .qr-and-apps {
-            flex-direction: column;
-            align-items: flex-start;
-        }
+    @media (max-width: 560px) {
+        .mediator-footer-inner { grid-template-columns: 1fr; gap: 24px; width: calc(100% - 32px); padding-top: 28px; }
+        .mediator-footer-bottom { width: calc(100% - 32px); }
     }
 </style>
-</head>
-
-<body>
-
-</body>
-
-<footer class="footer-new">
-
-    <!-- Hotline -->
-    <!-- <div class="hotline-section">
-
-        Box 1 – Người tìm việc -->
-        <!-- <div class="hotline-box">
-            <h3><?= $lang['hotline_job_seekers_title']; ?></h3>
-
-            <div class="hotline-item">
-                <i class="fas fa-headset"></i>
-                <div>
-                    <strong><?= $lang['hotline_southern_support']; ?></strong><br>
-                    HCM: (028) 7109 440
-                </div>
-            </div> -->
-
-            <!-- <div class="hotline-item">
-                <i class="fas fa-headset"></i>
-                <div>
-                    <strong><?= $lang['hotline_northern_support']; ?></strong><br>
-                    HN: (028) 7109 424
-                </div>
+<footer class="mediator-site-footer">
+    <div class="mediator-footer-inner">
+        <section>
+            <h2 class="mediator-footer-brand">Mediato</h2>
+            <p class="mediator-footer-copy">Mediato giúp bạn tham khảo hồ sơ hòa giải viên và gửi yêu cầu đặt lịch. Hình thức và địa điểm tư vấn cần được xác nhận với hòa giải viên trước buổi hẹn.</p>
+        </section>
+        <nav aria-label="Liên kết cuối trang">
+            <h2 class="mediator-footer-heading">Khám phá</h2>
+            <div class="mediator-footer-links">
+                <a href="index.php">Trang chủ</a>
+                <a href="searchpage.php">Tìm hòa giải viên</a>
+                <a href="feedback_jobseeker.php">Gửi góp ý</a>
             </div>
-
-            <button class="hotline-btn">
-                <?= $lang['hotline_job_seekers_consult_btn']; ?>
-            </button>
-        </div> -->
-
-        <!-- Box 2 – Nhà tuyển dụng -->
-        <!-- <div class="hotline-box">
-            <h3><?= $lang['hotline_employers_title']; ?></h3>
-
-            <div class="hotline-item">
-                <i class="fas fa-headset"></i>
-                <div>
-                    <strong><?= $lang['hotline_southern_support']; ?></strong><br>
-                    HCM: (029) 7109 440
-                </div>
-            </div> -->
-
-            <!-- <div class="hotline-item">
-                <i class="fas fa-headset"></i>
-                <div>
-                    <strong><?= $lang['hotline_northern_support']; ?></strong><br>
-                    HN: (029) 7109 424
-                </div>
-            </div>
-
-            <button class="hotline-btn">
-                <?= $lang['hotline_employers_consult_btn']; ?>
-            </button>
-        </div>
-    </div> -->
-
-    <!-- Thông tin & liên kết -->
-    <div class="footer-container">
-
-        <!-- Cột 1: About -->
-        <div class="footer-column">
-            <h4><?= $lang['footer_about_us']; ?></h4>
-            <p>
-                <strong><?= $lang['footer_company_full']; ?></strong><br>
-                <?= $lang['footer_phone']; ?><br>
-                <?= $lang['footer_email_job_seeker']; ?><br>
-                <?= $lang['footer_email_employer']; ?>
-            </p>
-        </div>
-
-        <!-- Cột 2: Information -->
-        <!-- <div class="footer-column">
-            <h4><?= $lang['footer_information']; ?></h4>
-            <ul>
-                <li><?= $lang['footer_career_handbook']; ?></li>
-                <li><?= $lang['footer_service_pricing']; ?></li>
-                <li><?= $lang['footer_terms_of_use']; ?></li>
-                <li><?= $lang['footer_privacy_policy']; ?></li>
-                <li><?= $lang['footer_site_map']; ?></li>
-                <li><?= $lang['footer_personal_data_policy']; ?></li>
-                <li><?= $lang['footer_compliance_consent']; ?></li>
-            </ul>
-        </div> -->
-
-        <!-- Cột 3: Kết nối & App -->
-        <!-- <div class="footer-column">
-            <h4><?= $lang['footer_connect_with_us']; ?></h4>
-            <div class="social-icons">
-                <a href=""><i class="fab fa-facebook-f facebook"></i></a>
-                <a href=""><i class="fab fa-tiktok tiktok"></i></a>
-                <a href=""><i class="fab fa-telegram telegram"></i></a>
-                <a href=""><i class="fab fa-instagram instagram"></i></a>
-            </div>
-
-            <h4><?= $lang['footer_download_app']; ?></h4>
-            <div class="qr-and-apps">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://unmade-petite-carefully.ngrok-free.dev&size=100x100"
-                    alt="QR Code">
-                <div class="app-links">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
-                        alt="Google Play">
-                    <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
-                        alt="App Store">
-                </div>
-            </div>
-        </div> -->
-
+        </nav>
     </div>
+    <div class="mediator-footer-bottom">Thông tin hồ sơ chỉ nhằm mục đích tham khảo, không thay thế tư vấn pháp lý.</div>
 </footer>
-</html>

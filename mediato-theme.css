@@ -1,0 +1,357 @@
+:root {
+    color-scheme: light;
+    --mediator-paper: #F7F5FA !important;
+    --mediator-ink: #2B2140 !important;
+    --mediator-teal: #6547A5 !important;
+    --mediator-terracotta: #6547A5 !important;
+    --mediator-muted: #655E70 !important;
+    --mediator-line: #DDD4EA !important;
+    --admin-navy: #32264A !important;
+    --admin-blue: #6547A5 !important;
+    --admin-text: #2B2140 !important;
+    --admin-line: #DDD4EA !important;
+    --primary-color: #6547A5 !important;
+    --primary-dark: #4D347F !important;
+}
+
+html {
+    background: #F7F5FA !important;
+}
+
+body {
+    background-color: #F7F5FA !important;
+    color: #2B2140 !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #2B2140 !important;
+}
+
+a:not(.btn-danger):not(.danger):not([class*="delete"]):not([class*="reject"]) {
+    color: #6547A5;
+}
+
+a:not(.btn-danger):not(.danger):not([class*="delete"]):not([class*="reject"]):hover {
+    color: #4D347F;
+}
+
+.header {
+    background: #fff !important;
+    border-color: #DDD4EA !important;
+}
+
+.header-nav,
+.header-nav.active {
+    background-color: #fff !important;
+}
+
+.header-nav-links a,
+.header-nav .ra_trang_ntd,
+.header-nav .dropdown-menu a,
+.header-right .dropdown-menu a,
+.mobile-login-btn {
+    color: #4D347F !important;
+}
+
+a.btn-login,
+a.mediator-primary-action,
+a.mediator-card-link,
+a.link-button:not(.secondary) {
+    border-color: #6547A5 !important;
+    background-color: #6547A5 !important;
+    color: #fff !important;
+}
+
+a.btn-login:hover,
+a.mediator-primary-action:hover,
+a.mediator-card-link:hover,
+a.link-button:not(.secondary):hover {
+    border-color: #4D347F !important;
+    background-color: #4D347F !important;
+    color: #fff !important;
+}
+
+.header-nav-links a:hover,
+.header-nav .dropdown-menu a:hover,
+.header-right .dropdown-menu a:hover {
+    background-color: #F0EBF8 !important;
+    color: #4D347F !important;
+}
+
+.mediator-brand-name,
+.mediator-brand-name small,
+.logo-wrap a {
+    color: #2B2140 !important;
+}
+
+.loggined_option button,
+.user-info button,
+#lang-switch-btn {
+    border: 1px solid #DDD4EA !important;
+    background: #F0EBF8 !important;
+    color: #4D347F !important;
+}
+
+.sidebar,
+.admin-nav,
+.admin-sidebar {
+    background-color: #32264A !important;
+    border-color: #4D347F !important;
+}
+
+.sidebar a,
+.admin-nav a,
+.admin-sidebar a {
+    color: #fff !important;
+}
+
+.sidebar a:hover,
+.admin-nav a:hover,
+.admin-sidebar a:hover,
+.sidebar a[aria-current="page"],
+.admin-nav a[aria-current="page"],
+.admin-sidebar a[aria-current="page"] {
+    background: #4D347F !important;
+    color: #fff !important;
+}
+
+button:not(.btn-danger):not(.danger):not(.error):not(.warning):not(.success):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-cancel):not(.cancel):not(.secondary):not(.btn-secondary):not([class*="delete"]):not([class*="reject"]),
+input[type="submit"]:not(.btn-danger):not(.danger):not(.error):not(.warning):not(.success):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-cancel):not(.cancel):not(.secondary):not(.btn-secondary):not([class*="delete"]):not([class*="reject"]),
+input[type="button"]:not(.btn-danger):not(.danger):not(.error):not(.warning):not(.success):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-cancel):not(.cancel):not(.secondary):not(.btn-secondary):not([class*="delete"]):not([class*="reject"]),
+.btn-primary,
+.btn:not(.btn-danger):not(.danger):not(.error):not(.warning):not(.success):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-cancel):not(.cancel):not(.secondary):not(.btn-secondary):not([class*="delete"]):not([class*="reject"]),
+[role="button"]:not(.btn-danger):not(.danger):not(.error):not(.warning):not(.success):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-cancel):not(.cancel):not(.secondary):not(.btn-secondary):not([class*="delete"]):not([class*="reject"]) {
+    border-color: #6547A5 !important;
+    background-color: #6547A5 !important;
+    color: #fff !important;
+}
+
+button:hover:not(:disabled):not(.btn-danger):not(.danger):not(.error):not(.warning):not(.success):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-cancel):not(.cancel):not(.secondary):not(.btn-secondary):not([class*="delete"]):not([class*="reject"]),
+input[type="submit"]:hover:not(:disabled):not(.btn-danger):not(.danger):not(.error):not(.warning):not(.success):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-cancel):not(.cancel):not(.secondary):not(.btn-secondary):not([class*="delete"]):not([class*="reject"]),
+input[type="button"]:hover:not(:disabled):not(.btn-danger):not(.danger):not(.error):not(.warning):not(.success):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-cancel):not(.cancel):not(.secondary):not(.btn-secondary):not([class*="delete"]):not([class*="reject"]),
+.btn-primary:hover,
+.btn:not(.btn-danger):not(.danger):not(.error):not(.warning):not(.success):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-cancel):not(.cancel):not(.secondary):not(.btn-secondary):not([class*="delete"]):not([class*="reject"]):hover {
+    border-color: #4D347F !important;
+    background-color: #4D347F !important;
+    color: #fff !important;
+}
+
+button.secondary,
+input.secondary,
+.btn-secondary,
+[role="button"].secondary {
+    border-color: #DDD4EA !important;
+    background-color: #F0EBF8 !important;
+    color: #4D347F !important;
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+    cursor: not-allowed;
+    opacity: .62;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+select,
+textarea {
+    border-color: #DDD4EA !important;
+    color: #2B2140 !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus-visible,
+a:focus-visible {
+    outline: 3px solid rgba(101, 71, 165, .28) !important;
+    outline-offset: 2px;
+    border-color: #6547A5 !important;
+}
+
+table th,
+thead th {
+    border-color: #DDD4EA !important;
+    background-color: #F0EBF8 !important;
+    color: #2B2140 !important;
+}
+
+table td,
+tbody td {
+    border-color: #E9E3F0 !important;
+}
+
+.card,
+.panel,
+.booking-card,
+.booking-panel,
+.mediator-card,
+.login-card,
+.recovery-card,
+.register-card,
+.profile-card,
+.admin-card,
+.modal-content,
+.modal-dialog,
+.flash {
+    border-color: #DDD4EA !important;
+    background-color: #fff !important;
+}
+
+.mediator-detail-page,
+.admin-main,
+.admin-content,
+.page-content {
+    background-color: #F7F5FA !important;
+    color: #2B2140 !important;
+}
+
+.mediator-note,
+.mediator-mode,
+.mediator-search-panel,
+.mediator-filter-panel,
+.mediator-booking-note {
+    border-color: #DDD4EA !important;
+    background-color: #fff !important;
+}
+
+.mediator-modes,
+.mediator-site-footer {
+    border-color: #DDD4EA !important;
+    background-color: #F0EBF8 !important;
+}
+
+.mediator-specialty,
+.mediator-mode-label {
+    border-color: #DDD4EA !important;
+    background-color: #F0EBF8 !important;
+    color: #4D347F !important;
+}
+
+.mediator-footer-bottom {
+    border-color: #DDD4EA !important;
+}
+
+.login-form-container,
+.register-form-container,
+.login-card,
+.recovery-card,
+.recovery-shell,
+.modal-card {
+    border: 1px solid #DDD4EA !important;
+    background-color: #fff !important;
+    color: #2B2140 !important;
+}
+
+.login-form-container h1,
+.login-form-container h2,
+.register-form-container h1,
+.register-form-container h2,
+.login-card h1,
+.login-card h2,
+.recovery-card h1,
+.recovery-shell h1,
+.modal-card h2 {
+    color: #2B2140 !important;
+}
+
+.login-form-container .btn-login,
+.register-form-container .btn-register,
+.login-card .btn-login,
+.recovery-card button,
+.recovery-shell .primary-button {
+    border-color: #6547A5 !important;
+    background-color: #6547A5 !important;
+    color: #fff !important;
+}
+
+.login-form-container .btn-login:hover,
+.register-form-container .btn-register:hover,
+.login-card .btn-login:hover,
+.recovery-card button:hover:not(:disabled),
+.recovery-shell .primary-button:hover:not(:disabled) {
+    border-color: #4D347F !important;
+    background-color: #4D347F !important;
+    color: #fff !important;
+}
+
+.login-form-container .forgot a,
+.login-form-container .signup a,
+.login-form-container .redirect-employer a,
+.register-form-container .login-link a,
+.register-form-container .redirect-employer a,
+.login-card .forgot a,
+.login-card .support a {
+    color: #4D347F !important;
+}
+
+.header .auth-switch {
+    border-color: #DDD4EA !important;
+    background-color: #F0EBF8 !important;
+    color: #4D347F !important;
+}
+
+.header .auth-switch:hover,
+.header a:hover {
+    border-color: #4D347F !important;
+    background-color: #4D347F !important;
+    color: #fff !important;
+}
+
+.recovery-shell .resend-button {
+    border: 1px solid #DDD4EA !important;
+    background-color: #F0EBF8 !important;
+    color: #4D347F !important;
+}
+
+.login-form-container .toggle-password,
+.register-form-container .toggle-password,
+.login-card .toggle-password,
+.login-card .modal-close,
+.recovery-shell .toggle-password,
+.recovery-shell .modal-close {
+    border-color: transparent !important;
+    background-color: transparent !important;
+    color: #655E70 !important;
+}
+
+.notice:not(.notice--error):not(.error),
+.flash:not(.error):not(.danger),
+.status-chip,
+.badge:not(.badge-danger):not(.badge-error) {
+    border-color: #DDD4EA;
+}
+
+.notice--error,
+.error,
+.danger,
+[role="alert"] {
+    color: #8D3029;
+}
+
+.status-success,
+.success,
+.notice--success {
+    color: #236B45;
+}
+
+.status-warning,
+.warning,
+.notice--warning {
+    color: #80520D;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    button,
+    input[type="submit"],
+    .btn,
+    .header-nav-links a {
+        transition: background-color .16s ease, border-color .16s ease, color .16s ease;
+    }
+}

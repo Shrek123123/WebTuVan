@@ -838,6 +838,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background: #b23b3b; color: #fff !important; transform: translateY(-1px);
         }
     </style>
+    <link rel="stylesheet" href="../mediato-theme.css?v=6">
 </head>
 
 

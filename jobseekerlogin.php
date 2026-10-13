@@ -2,105 +2,54 @@
 session_start();
 require_once 'config.php';
 
-// Nếu người dùng bấm đổi ngôn ngữ
-if (isset($_GET['lang'])) {
+if (isset($_GET['lang']) && in_array($_GET['lang'], ['vi', 'en'], true)) {
     $_SESSION['lang'] = $_GET['lang'];
 }
-// Nếu chưa có ngôn ngữ thì mặc định là tiếng Việt
-if (!isset($_SESSION['lang'])) {
-    $_SESSION['lang'] = 'vi';
+$language = in_array($_SESSION['lang'] ?? 'vi', ['vi', 'en'], true) ? $_SESSION['lang'] : 'vi';
+$_SESSION['lang'] = $language;
+include __DIR__ . '/lang/' . $language . '.php';
+$loginError = '';
+if (empty($_SESSION['customer_login_csrf'])) {
+    $_SESSION['customer_login_csrf'] = bin2hex(random_bytes(32));
 }
 
-// Load file ngôn ngữ tương ứng
-include 'lang/' . $_SESSION['lang'] . '.php';
-$invalidPasswordMessage = $lang['login_invalid_password'] ?? 'Invalid password. Please try again.';
-$invalidEmailMessage = $lang['login_invalid_email'] ?? 'Invalid email. Please try again.';
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
-
-    // Check if the email and password are correct
-    $stmt = $conn->prepare("SELECT * FROM user WHERE email = ? AND user_type = 'jobseeker'");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        if (password_verify($password, $row['password'])) {
-            if (($row['status'] ?? 'unlocked') === 'locked') {
-                echo "<script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    var errorDiv = document.createElement('div');
-                    errorDiv.style.color = 'red';
-                    errorDiv.style.textAlign = 'center';
-                    errorDiv.style.marginTop = '10px';
-                    errorDiv.innerText = " . json_encode($lang['account_locked'] ?? 'Tài khoản đã bị khoá. Vui lòng liên hệ quản trị viên.', JSON_UNESCAPED_UNICODE) . ";
-                    document.querySelector('input[name=\"password\"]').closest('.form-group').appendChild(errorDiv);
-                });
-                </script>";
-            } else {
-                // Password is correct
-                $_SESSION['username'] = $row['username'];
-                $_SESSION['role'] = 'jobseeker';
-                $_SESSION['jobseeker_id'] = $row['id'];
-                // Clear any previous output before redirecting
-                if (ob_get_level()) {
-                    ob_end_clean();
-                }
-                // Respect optional redirect parameter (only allow internal redirects)
-                $redirect = null;
-                if (!empty($_GET['redirect'])) {
-                    $redirect = $_GET['redirect'];
-                } elseif (!empty($_POST['redirect'])) {
-                    $redirect = $_POST['redirect'];
-                }
-
-                // Simple open-redirect protection: only allow relative/internal paths (no host)
-                if (!empty($redirect)) {
-                    $parsed = parse_url($redirect);
-                    if (empty($parsed['host']) && empty($parsed['scheme'])) {
-                        // safe to redirect
-                        header('Location: ' . $redirect);
-                        exit();
-                    }
-                }
-
-                // Fallback destination
-                header("Location: jobseekerdashboard.php");
-                exit();
-            }
-
-        } else {
-            // Invalid password
-            echo "<script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var errorDiv = document.createElement('div');
-                errorDiv.style.color = 'red';
-                errorDiv.style.textAlign = 'center';
-                errorDiv.style.marginTop = '10px';
-                errorDiv.innerText = " . json_encode($invalidPasswordMessage) . ";
-                document.querySelector('input[name=\"password\"]').closest('.form-group').appendChild(errorDiv);
-            });
-            </script>";
-        }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $csrfToken = (string) ($_POST['csrf_token'] ?? '');
+    if (!hash_equals((string) $_SESSION['customer_login_csrf'], $csrfToken)) {
+        $loginError = 'Phiên đăng nhập không hợp lệ. Vui lòng tải lại trang và thử lại.';
     } else {
-        // Email not found
-        echo "<script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var errorDiv = document.createElement('div');
-                errorDiv.style.color = 'red';
-                errorDiv.style.textAlign = 'center';
-                errorDiv.style.marginTop = '10px';
-                errorDiv.innerText = " . json_encode($invalidEmailMessage) . ";
-                document.querySelector('input[name=\"password\"]').closest('.form-group').appendChild(errorDiv);
-            });
-            </script>";
-    }
+        $email = trim((string) ($_POST['email'] ?? ''));
+        $password = (string) ($_POST['password'] ?? '');
+        $stmt = $conn->prepare("SELECT id, full_name, password_hash, status FROM users WHERE email = ? AND role = 'customer' LIMIT 1");
+        if (!$stmt) {
+            throw new RuntimeException('Không thể chuẩn bị yêu cầu đăng nhập: ' . $conn->error);
+        }
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
 
-    // Close the statement and connection
-    $stmt->close();
-    $conn->close();
+        if (!$row || !password_verify($password, $row['password_hash'])) {
+            $loginError = $lang['login_invalid_email'] ?? 'Email hoặc mật khẩu không đúng.';
+        } elseif (($row['status'] ?? 'active') !== 'active') {
+            $loginError = $lang['account_locked'] ?? 'Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên.';
+        } else {
+            session_regenerate_id(true);
+            $_SESSION['username'] = $row['full_name'];
+            $_SESSION['role'] = 'jobseeker';
+            $_SESSION['customer_id'] = (int) $row['id'];
+            $_SESSION['jobseeker_id'] = (int) $row['id'];
+            $redirect = trim((string) ($_GET['redirect'] ?? $_POST['redirect'] ?? ''));
+            $parsed = $redirect !== '' && strlen($redirect) <= 2048 ? parse_url($redirect) : false;
+            if ($parsed !== false && empty($parsed['host']) && empty($parsed['scheme'])
+                && strpos($redirect, '//') !== 0 && !preg_match('/[\r\n\x00-\x1F\x7F]/', $redirect)) {
+                header('Location: ' . $redirect);
+            } else {
+                header('Location: bookings.php');
+            }
+            exit();
+        }
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -258,6 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
     </style>
+    <link rel="stylesheet" href="mediato-theme.css?v=6">
 </head>
 
 <body>
@@ -274,8 +224,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (!empty($_GET['redirect'])) {
                 $form_action .= '?redirect=' . urlencode($_GET['redirect']);
             }
+            $registration_url = 'jobseekerregister.php';
+            if (!empty($_GET['redirect'])) {
+                $registration_url .= '?redirect=' . urlencode($_GET['redirect']);
+            }
             ?>
             <form action="<?= htmlspecialchars($form_action) ?>" method="POST">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['customer_login_csrf'], ENT_QUOTES, 'UTF-8') ?>">
+                <?php if ($loginError !== ''): ?>
+                    <p role="alert" style="color: #9f2727;"><?= htmlspecialchars($loginError, ENT_QUOTES, 'UTF-8') ?></p>
+                <?php endif; ?>
                 <div class="form-group">
                     <label for="emailInput"><?= $lang['email']; ?></label>
                     <input type="email" id="emailInput" name="email"
@@ -299,12 +257,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </form>
 
             <div class="signup">
-                <?= $lang['jobseeker_login_signup']; ?>
+                <?= htmlspecialchars($lang['jobseeker_login_signup_prefix'] ?? 'Chưa có tài khoản?', ENT_QUOTES, 'UTF-8') ?>
+                <a href="<?= htmlspecialchars($registration_url, ENT_QUOTES, 'UTF-8') ?>">
+                    <?= htmlspecialchars($lang['jobseeker_login_signup_link'] ?? 'Đăng ký tại đây', ENT_QUOTES, 'UTF-8') ?>
+                </a>
             </div>
 
-            <div class="redirect-employer" style="margin-top: 20px; text-align: center;">
-                <p><?= $lang['jobseeker_login_redirect_employer']; ?></p>
-            </div>
         </div>
     </div>
 

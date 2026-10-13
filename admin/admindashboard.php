@@ -3,71 +3,49 @@ session_start();
 // Điều chỉnh đường dẫn tới config.php vì admindashboard.php nằm trong thư mục admin
 require_once '../config.php'; // Giả định config.php nằm ở thư mục gốc của project
 
-if (!isset($_SESSION['usernameadmin'])) {
-    if (isset($_SERVER['HTTP_REFERER'])) {
-        echo "Bạn đến từ: " . $_SERVER['HTTP_REFERER'];
-        header('Location: ' . $_SERVER['HTTP_REFERER']);
-        exit();
-    } else {
-        echo "Không xác định trang trước đó.";
-        header('Location: ../index.php'); // Giả định index.php nằm ở thư mục gốc
-    }
+if (empty($_SESSION['usernameadmin']) || empty($_SESSION['admin_id'])) {
+    header('Location: adminlogin.php');
+    exit();
+}
+$adminId = (int) $_SESSION['admin_id'];
+$adminStmt = $conn->prepare("SELECT id FROM users WHERE id = ? AND role = 'admin' AND status = 'active' LIMIT 1");
+if (!$adminStmt) {
+    throw new RuntimeException('Could not verify administrator: ' . $conn->error);
+}
+$adminStmt->bind_param('i', $adminId);
+$adminStmt->execute();
+$isAdmin = (bool) $adminStmt->get_result()->fetch_assoc();
+$adminStmt->close();
+if (!$isAdmin) {
+    session_destroy();
+    header('Location: adminlogin.php');
+    exit();
 }
 
 // --- Lấy dữ liệu động từ database ---
-$total_employer_accounts = 0;
-$total_jobseeker_accounts = 0;
-$total_job_posts = 0;
-$job_post_pendings = 0;
+$total_customer_accounts = 0;
+$total_mediators = 0;
+$online_mediators = 0;
 $user_feedbacks = 0;
 
-// Lấy tổng số tài khoản Employer
-$sql_employers = "SELECT COUNT(*) AS total FROM user WHERE user_type = 'employer'";
-$result_employers = $conn->query($sql_employers);
-if ($result_employers && $result_employers->num_rows > 0) {
-    $row = $result_employers->fetch_assoc();
-    $total_employer_accounts = $row['total'];
+$customerResult = $conn->query("SELECT COUNT(*) AS total FROM users WHERE role = 'customer'");
+if ($customerResult && $customerResult->num_rows > 0) {
+    $total_customer_accounts = (int) $customerResult->fetch_assoc()['total'];
 }
 
-// Lấy tổng số tài khoản Jobseeker
-$sql_jobseekers = "SELECT COUNT(*) AS total FROM user WHERE user_type = 'jobseeker'";
-$result_jobseekers = $conn->query($sql_jobseekers);
-if ($result_jobseekers && $result_jobseekers->num_rows > 0) {
-    $row = $result_jobseekers->fetch_assoc();
-    $total_jobseeker_accounts = $row['total'];
-}
-
-// Lấy tổng số Job Posts (tất cả các trạng thái)
-$sql_total_jobs = "SELECT COUNT(*) AS total FROM hoa_giai_vien";
-$result_total_jobs = $conn->query($sql_total_jobs);
-if ($result_total_jobs && $result_total_jobs->num_rows > 0) {
-    $row = $result_total_jobs->fetch_assoc();
-    $total_job_posts = $row['total'];
-}
-
-// Lấy số Job Post Pendings (trạng thái 'pending_review')
-$sql_pending_jobs = "SELECT COUNT(*) AS total FROM hoa_giai_vien WHERE status = 'pending_review'";
-$result_pending_jobs = $conn->query($sql_pending_jobs);
-if ($result_pending_jobs && $result_pending_jobs->num_rows > 0) {
-    $row = $result_pending_jobs->fetch_assoc();
-    $job_post_pendings = $row['total'];
+$result_mediators = $conn->query("SELECT COUNT(*) AS total, COALESCE(SUM(status = 'online'), 0) AS online_total FROM mediators");
+if ($result_mediators && $result_mediators->num_rows > 0) {
+    $row = $result_mediators->fetch_assoc();
+    $total_mediators = (int) $row['total'];
+    $online_mediators = (int) $row['online_total'];
 }
 
 // Lấy tổng số User Feedbacks
-$sql_feedbacks = "SELECT COUNT(*) AS total FROM feedback"; // Giả định bảng feedbacks có tên là 'feedback'
+$sql_feedbacks = "SELECT COUNT(*) AS total FROM reviews";
 $result_feedbacks = $conn->query($sql_feedbacks);
 if ($result_feedbacks && $result_feedbacks->num_rows > 0) {
     $row = $result_feedbacks->fetch_assoc();
     $user_feedbacks = $row['total'];
-}
-
-// Đếm số mục chờ duyệt cho badge trên sidebar (job + company)
-$pending_jobs_badge = $job_post_pendings;
-$pending_companies_badge = 0;
-$res_pending_companies = $conn->query("SELECT COUNT(*) AS total FROM company WHERE status = 'pending_review'");
-if ($res_pending_companies) {
-    $pending_companies_badge = (int) ($res_pending_companies->fetch_assoc()['total'] ?? 0);
-    $res_pending_companies->close();
 }
 
 // Đóng kết nối database sau khi đã lấy xong dữ liệu
@@ -219,6 +197,7 @@ $conn->close();
             line-height: 1;
         }
     </style>
+    <link rel="stylesheet" href="../mediato-theme.css?v=6">
 </head>
 
 <body>
@@ -230,16 +209,9 @@ $conn->close();
             <span>Trực tuyến</span>
         </div>
         <ul>
-            <li><a href="#">Thay đổi ảnh trang chủ</a></li>
-            <li><a href="#">Người dùng</a></li>
-            <li><a href="jobpending.php">Duyệt tin tuyển dụng
-                    <?php if ($pending_jobs_badge > 0): ?><span class="nav-badge"><?php echo $pending_jobs_badge; ?></span><?php endif; ?>
-                </a></li>
-            <li><a href="company_check.php">Duyệt thông tin công ty
-                    <?php if ($pending_companies_badge > 0): ?><span class="nav-badge"><?php echo $pending_companies_badge; ?></span><?php endif; ?>
-                </a></li>
+            <li><a href="mediators.php">Quản lý hòa giải viên</a></li>
+            <li><a href="bookings.php">Quản lý lịch tư vấn</a></li>
             <li><a href="user_table.php">Duyệt người dùng</a></li>
-            <li><a href="feedbackcheck.php">Phản hồi</a></li>
         </ul>
     </div>
     <div class="main">
@@ -257,24 +229,20 @@ $conn->close();
         </div>
         <div class="cards">
             <div class="card yellow">
-                <h2><?php echo $total_employer_accounts; ?></h2>
-                <p>Tổng tài khoản nhà tuyển dụng</p>
-            </div>
-            <div class="card yellow">
-                <h2><?php echo $total_jobseeker_accounts; ?></h2>
-                <p>Tổng tài khoản ứng viên</p>
+                <h2><?php echo $total_customer_accounts; ?></h2>
+                <p>Tổng tài khoản khách hàng</p>
             </div>
             <div class="card green">
-                <h2><?php echo $total_job_posts; ?></h2>
-                <p>Tổng tin tuyển dụng</p>
+                <h2><?php echo $total_mediators; ?></h2>
+                <p>Tổng hòa giải viên</p>
             </div>
             <div class="card blue">
-                <h2><?php echo $job_post_pendings; ?></h2>
-                <p>Tin đang chờ duyệt</p>
+                <h2><?php echo $online_mediators; ?></h2>
+                <p>Đang trực tuyến</p>
             </div>
             <div class="card purple">
                 <h2><?php echo $user_feedbacks; ?></h2>
-                <p>Phản hồi từ người dùng</p>
+                <p>Đánh giá tư vấn</p>
             </div>
         </div>
         <div class="content-grid">
@@ -285,9 +253,9 @@ $conn->close();
             <div class="box">
                 <h3>Hoạt động truy cập</h3>
                 <ul>
-                    <li>Đăng tin mới</li>
-                    <li>Tuyển dụng</li>
-                    <li>Ứng tuyển</li>
+                    <li>Quản lý tài khoản người dùng</li>
+                    <li>Tra cứu hồ sơ hòa giải viên</li>
+                    <li>Xem phản hồi người dùng</li>
                 </ul>
             </div>
         </div>

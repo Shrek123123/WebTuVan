@@ -133,7 +133,8 @@ if (in_array($company_review_status, ['pending_review', 'rejected'], true)) {
             }
             .review-btn-cancel:hover { background: #e5e7eb; }
         </style>
-    </head>
+        <link rel="stylesheet" href="mediato-theme.css?v=6">
+</head>
     <body>
         <div class="review-dialog" role="alertdialog" aria-modal="true">
             <div class="review-icon">!</div>
@@ -583,6 +584,7 @@ $company_profile_jobs_title = str_replace(':company_name', $company_name, $compa
             }
         }
     </style>
+    <link rel="stylesheet" href="mediato-theme.css?v=6">
 </head>
 <body>
     <?php include __DIR__ . '/homepage/header.php'; ?>

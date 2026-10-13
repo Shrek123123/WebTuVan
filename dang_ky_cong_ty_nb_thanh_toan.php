@@ -68,6 +68,7 @@ try {
         main{width:min(100%,560px);padding:36px;background:#fff;border:1px solid #dce8e2;border-radius:8px;text-align:center;box-shadow:0 18px 48px #18342c18}
         .brand{display:block;width:min(210px,72%);height:auto;margin:0 auto 24px}h1{font-size:24px;line-height:1.35}p{line-height:1.65;color:#52645f}.error-id{font-family:monospace;color:#657673}a{display:inline-block;margin-top:16px;padding:11px 16px;background:#19765b;color:#fff;text-decoration:none;border-radius:4px}
     </style>
+    <link rel="stylesheet" href="mediato-theme.css?v=6">
 </head>
 <body>
 <main>

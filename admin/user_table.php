@@ -31,7 +31,7 @@ function getCurrentAdminId(mysqli $conn): int
         return 0;
     }
 
-    $stmt = $conn->prepare("SELECT id FROM `user` WHERE username = ? AND user_type = 'admin' LIMIT 1");
+    $stmt = $conn->prepare("SELECT id FROM users WHERE full_name = ? AND role = 'admin' LIMIT 1");
     if (!$stmt) {
         return 0;
     }
@@ -54,8 +54,7 @@ function formatUserType(string $userType): string
 {
     return match (strtolower($userType)) {
         'admin' => 'Quản trị viên',
-        'employer' => 'Nhà tuyển dụng',
-        'jobseeker' => 'Ứng viên',
+        'customer' => 'Khách hàng',
         default => 'Không rõ',
     };
 }
@@ -102,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $targetId = (int) $targetId;
-    $targetStmt = $conn->prepare("SELECT id, username, user_type, status FROM `user` WHERE id = ? LIMIT 1");
+    $targetStmt = $conn->prepare("SELECT id, full_name AS username, role AS user_type, status FROM users WHERE id = ? LIMIT 1");
     $targetUser = null;
 
     if ($targetStmt) {
@@ -127,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $username = (string) ($targetUser['username'] ?? '');
-    $currentStatus = (string) ($targetUser['status'] ?? 'unlocked');
+    $currentStatus = (string) ($targetUser['status'] ?? 'active');
     $updated = false;
 
     if ($action === 'lock') {
@@ -148,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
 
-        $updateStmt = $conn->prepare("UPDATE `user` SET status = 'locked', admin_note = ? WHERE id = ? AND status = 'unlocked'");
+        $updateStmt = $conn->prepare("UPDATE users SET status = 'locked', admin_note = ? WHERE id = ? AND status = 'active'");
         if ($updateStmt) {
             $updateStmt->bind_param('si', $lockReason, $targetId);
             $updateStmt->execute();
@@ -164,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setAdminUserFlash('error', 'Không thể khoá tài khoản ' . $username . '.');
         }
     } else {
-        $updateStmt = $conn->prepare("UPDATE `user` SET status = 'unlocked' WHERE id = ? AND status = 'locked'");
+        $updateStmt = $conn->prepare("UPDATE users SET status = 'active' WHERE id = ? AND status = 'locked'");
         if ($updateStmt) {
             $updateStmt->bind_param('i', $targetId);
             $updateStmt->execute();
@@ -174,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($updated) {
             setAdminUserFlash('success', 'Đã bỏ khoá tài khoản ' . $username . '.');
-        } elseif ($currentStatus === 'unlocked') {
+        } elseif ($currentStatus === 'active') {
             setAdminUserFlash('error', 'Tài khoản ' . $username . ' đang ở trạng thái hoạt động.');
         } else {
             setAdminUserFlash('error', 'Không thể bỏ khoá tài khoản ' . $username . '.');
@@ -193,9 +192,9 @@ $currentAdminId = getCurrentAdminId($conn);
 $users = [];
 $listError = '';
 
-$userQuery = "SELECT id, username, user_type, email, phone_number, created_at, verify_email, updated_at, status, admin_note
-              FROM `user`
-              ORDER BY user_type DESC, id ASC";
+$userQuery = "SELECT id, full_name AS username, role AS user_type, email, phone AS phone_number, created_at, updated_at, status, admin_note
+              FROM users
+              ORDER BY role DESC, id ASC";
 $userStmt = $conn->prepare($userQuery);
 
 if ($userStmt && $userStmt->execute()) {
@@ -212,28 +211,14 @@ if ($userStmt && $userStmt->execute()) {
 }
 
 $totalUsers = count($users);
-$totalEmployers = 0;
-$totalJobseekers = 0;
+$totalAdmins = 0;
+$totalCustomers = 0;
 foreach ($users as $user) {
-    if (($user['user_type'] ?? '') === 'employer') {
-        $totalEmployers++;
-    } elseif (($user['user_type'] ?? '') === 'jobseeker') {
-        $totalJobseekers++;
+    if (($user['user_type'] ?? '') === 'admin') {
+        $totalAdmins++;
+    } elseif (($user['user_type'] ?? '') === 'customer') {
+        $totalCustomers++;
     }
-}
-
-// --- Số mục chờ duyệt cho badge trên sidebar ---
-$pending_jobs_badge = 0;
-$pending_companies_badge = 0;
-$res_pending_jobs = $conn->query("SELECT COUNT(*) AS total FROM hoa_giai_vien WHERE status = 'pending_review'");
-if ($res_pending_jobs) {
-    $pending_jobs_badge = (int) ($res_pending_jobs->fetch_assoc()['total'] ?? 0);
-    $res_pending_jobs->close();
-}
-$res_pending_companies = $conn->query("SELECT COUNT(*) AS total FROM company WHERE status = 'pending_review'");
-if ($res_pending_companies) {
-    $pending_companies_badge = (int) ($res_pending_companies->fetch_assoc()['total'] ?? 0);
-    $res_pending_companies->close();
 }
 
 $conn->close();
@@ -839,6 +824,7 @@ $conn->close();
             }
         }
     </style>
+    <link rel="stylesheet" href="../mediato-theme.css?v=6">
 </head>
 
 <body>
@@ -850,23 +836,16 @@ $conn->close();
             <span>Trực tuyến</span>
         </div>
         <ul>
-            <li><a href="#">Thay đổi ảnh trang chủ</a></li>
-            <li><a href="#">Người dùng</a></li>
-            <li><a href="jobpending.php">Duyệt tin tuyển dụng
-                    <?php if ($pending_jobs_badge > 0): ?><span class="nav-badge"><?= $pending_jobs_badge ?></span><?php endif; ?>
-                </a></li>
-            <li><a href="company_check.php">Duyệt thông tin công ty
-                    <?php if ($pending_companies_badge > 0): ?><span class="nav-badge"><?= $pending_companies_badge ?></span><?php endif; ?>
-                </a></li>
-            <li><a href="user_table.php" style="background:#1e3a66;">Duyệt người dùng</a></li>
-            <li><a href="feedbackcheck.php">Phản hồi</a></li>
+            <li><a href="mediators.php">Quản lý hòa giải viên</a></li>
+            <li><a href="bookings.php">Quản lý lịch tư vấn</a></li>
+            <li><a href="user_table.php" style="background:#1e3a66;">Quản lý tài khoản</a></li>
         </ul>
     </div>
 
     <main class="admin-main">
         <div class="admin-topbar">
             <h1>Quản lý người dùng</h1>
-            <img class="admin-topbar__logo" src="../image/logo.png" alt="ViecNhe">
+            <img class="admin-topbar__logo" src="../image/logo.png" alt="Mediato">
             <form method="post" action="adminlogout.php">
                 <button type="submit" name="admin_logout" class="admin-topbar__logout">Đăng xuất</button>
             </form>
@@ -890,12 +869,12 @@ $conn->close();
                 <span>Tất cả</span>
             </div>
             <div class="census-item">
-                <strong><?= $totalEmployers ?></strong>
-                <span>Nhà tuyển dụng</span>
+                <strong><?= $totalAdmins ?></strong>
+                <span>Quản trị viên</span>
             </div>
             <div class="census-item">
-                <strong><?= $totalJobseekers ?></strong>
-                <span>Ứng viên</span>
+                <strong><?= $totalCustomers ?></strong>
+                <span>Khách hàng</span>
             </div>
         </section>
 
@@ -909,7 +888,6 @@ $conn->close();
                         <th scope="col">Email</th>
                         <th scope="col">Số điện thoại</th>
                         <th scope="col">Ngày tạo</th>
-                        <th scope="col">Email đã xác minh</th>
                         <th scope="col">Cập nhật lần cuối</th>
                         <th scope="col">Trạng thái</th>
                         <th scope="col" class="action-column">Khoá tài khoản</th>
@@ -918,20 +896,20 @@ $conn->close();
                 <tbody>
                     <?php if ($listError !== ''): ?>
                         <tr>
-                            <td class="empty-state" colspan="10">
+                            <td class="empty-state" colspan="9">
                                 <?= h($listError) ?>
                                 <a class="retry-link" href="user_table.php">Tải lại trang</a>
                             </td>
                         </tr>
                     <?php elseif (count($users) === 0): ?>
                         <tr>
-                            <td class="empty-state" colspan="10">Chưa có tài khoản người dùng.</td>
+                            <td class="empty-state" colspan="9">Chưa có tài khoản người dùng.</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($users as $user):
                             $userId = (int) ($user['id'] ?? 0);
                             $username = (string) ($user['username'] ?? '');
-                            $status = ($user['status'] ?? 'unlocked') === 'locked' ? 'locked' : 'unlocked';
+                            $status = ($user['status'] ?? 'active') === 'locked' ? 'locked' : 'active';
                             $isCurrentAdmin = $currentAdminId > 0 && $userId === $currentAdminId;
                         ?>
                             <tr>
@@ -941,7 +919,6 @@ $conn->close();
                                 <td><?= h($user['email'] ?? '—') ?></td>
                                 <td class="muted"><?= h($user['phone_number'] ?: '—') ?></td>
                                 <td class="numeric"><?= h(formatDateValue($user['created_at'] ?? null)) ?></td>
-                                <td><?= h(formatVerificationStatus($user['verify_email'] ?? false)) ?></td>
                                 <td class="numeric"><?= h(formatDateValue($user['updated_at'] ?? null)) ?></td>
                                 <td>
                                     <span class="status-marker <?= $status === 'locked' ? 'status-marker--locked' : '' ?>">
@@ -949,7 +926,7 @@ $conn->close();
                                     </span>
                                 </td>
                                 <td class="action-column">
-                                    <?php if ($isCurrentAdmin && $status === 'unlocked'): ?>
+                                    <?php if ($isCurrentAdmin && $status === 'active'): ?>
                                         <button type="button" class="account-action" disabled title="Không thể tự khoá tài khoản quản trị hiện tại">Tài khoản hiện tại</button>
                                     <?php else: ?>
                                         <button

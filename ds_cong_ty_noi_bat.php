@@ -175,6 +175,7 @@ $featuredCompanies = getProminentCompanies($conn);
             .company-grid { grid-template-columns: 1fr; }
         }
     </style>
+    <link rel="stylesheet" href="mediato-theme.css?v=6">
 </head>
 <body>
     <?php include __DIR__ . '/homepage/header.php'; ?>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../config.php';
-if (!isset($_SESSION['lang'])) {
+if (!in_array($_SESSION['lang'] ?? 'vi', ['vi', 'en'], true)) {
     $_SESSION['lang'] = 'vi';
 }
 include_once __DIR__ . '/../lang/' . $_SESSION['lang'] . '.php';
@@ -12,15 +12,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $accountLockedMessage = $lang['account_locked'] ?? 'Tài khoản đã bị khoá. Vui lòng liên hệ quản trị viên.';
 
     // Check if the email and password are correct
-    $stmt = $conn->prepare("SELECT id, username, password, status FROM user WHERE email = ? AND user_type = 'admin'");
+    $stmt = $conn->prepare("SELECT id, full_name, password_hash, status FROM users WHERE email = ? AND role = 'admin'");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        if (password_verify($password, $row['password'])) {
-            if (($row['status'] ?? 'unlocked') === 'locked') {
+        if (password_verify($password, $row['password_hash'])) {
+            if (($row['status'] ?? 'active') !== 'active') {
                 echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     var errorDiv = document.createElement('div');
@@ -33,7 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </script>";
             } else {
                 // Password is correct
-                $_SESSION['usernameadmin'] = $row['username'];
+                session_regenerate_id(true);
+                $_SESSION['usernameadmin'] = $row['full_name'];
                 $_SESSION['admin_id'] = (int) $row['id'];
                 header("Location: admindashboard.php");
                 exit();
@@ -68,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="icon" type="image/svg+xml" href="../image/favicon.svg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($lang['admin_login'] ?? 'Admin Login', ENT_QUOTES, 'UTF-8') ?> - Việc Nhẹ.vn</title>
+    <title><?= htmlspecialchars($lang['admin_login'] ?? 'Admin Login', ENT_QUOTES, 'UTF-8') ?> - Mediato</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -226,6 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
     </style>
+    <link rel="stylesheet" href="../mediato-theme.css?v=6">
 </head>
 
 <body>
