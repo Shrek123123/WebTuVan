@@ -46,8 +46,8 @@ if ($result_user->num_rows > 0) {
 
 $stmt_user->close();
 
-// $profiledata của bảng jobseeker_profile
-$sql_profile = "SELECT * FROM jobseeker_profile WHERE jobseeker_id = ?";
+// $profiledata của bảng ho_so_khach_hang
+$sql_profile = "SELECT * FROM ho_so_khach_hang WHERE jobseeker_id = ?";
 $stmt_profile = $conn->prepare($sql_profile);
 $stmt_profile->bind_param("i", $jobseeker_id);
 $stmt_profile->execute();
@@ -85,7 +85,7 @@ if (!empty($marital_status_value_from_db)) {
 $uploadedFile = '';
 
 // Lấy file đã upload nếu có
-$stmt = $conn->prepare("SELECT cv_file FROM jobseeker_profile WHERE jobseeker_id=?");
+$stmt = $conn->prepare("SELECT cv_file FROM ho_so_khach_hang WHERE jobseeker_id=?");
 $stmt->bind_param("i", $jobseeker_id);
 $stmt->execute();
 $stmt->bind_result($cv_file_path);
@@ -500,7 +500,7 @@ if ($cv_file_path) {
             $jobseeker_id = $_SESSION['jobseeker_id'] ?? 0;
 
             // Lấy ảnh đại diện jobseeker
-            $sql = "SELECT profile_pic FROM jobseeker_profile WHERE jobseeker_id = $jobseeker_id LIMIT 1";
+            $sql = "SELECT profile_pic FROM ho_so_khach_hang WHERE jobseeker_id = $jobseeker_id LIMIT 1";
             $result = $conn->query($sql);
             $profile_pic = "";
             if ($result && $row = $result->fetch_assoc()) {

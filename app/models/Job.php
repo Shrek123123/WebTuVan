@@ -5,7 +5,7 @@
 class Job {
     public static function searchJobs($keyword, $job_id, $location, $company_name, $minSalary, $maxSalary, $sort_by, $category, $experience, $job_type, $remote, $industry) {
     global $conn;
-    $sql = "SELECT * FROM job WHERE 1";
+    $sql = "SELECT * FROM hoa_giai_vien WHERE 1";
 
     if ($keyword) {
         $sql .= " AND (title LIKE '%$keyword%' OR description LIKE '%$keyword%')";

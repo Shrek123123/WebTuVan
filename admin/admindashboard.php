@@ -38,7 +38,7 @@ if ($result_jobseekers && $result_jobseekers->num_rows > 0) {
 }
 
 // Lấy tổng số Job Posts (tất cả các trạng thái)
-$sql_total_jobs = "SELECT COUNT(*) AS total FROM job";
+$sql_total_jobs = "SELECT COUNT(*) AS total FROM hoa_giai_vien";
 $result_total_jobs = $conn->query($sql_total_jobs);
 if ($result_total_jobs && $result_total_jobs->num_rows > 0) {
     $row = $result_total_jobs->fetch_assoc();
@@ -46,7 +46,7 @@ if ($result_total_jobs && $result_total_jobs->num_rows > 0) {
 }
 
 // Lấy số Job Post Pendings (trạng thái 'pending_review')
-$sql_pending_jobs = "SELECT COUNT(*) AS total FROM job WHERE status = 'pending_review'";
+$sql_pending_jobs = "SELECT COUNT(*) AS total FROM hoa_giai_vien WHERE status = 'pending_review'";
 $result_pending_jobs = $conn->query($sql_pending_jobs);
 if ($result_pending_jobs && $result_pending_jobs->num_rows > 0) {
     $row = $result_pending_jobs->fetch_assoc();

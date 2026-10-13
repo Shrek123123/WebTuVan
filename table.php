@@ -44,7 +44,7 @@ if ($stmt !== TRUE) {
     echo "Error creating password_reset table: " . $conn->error . "<br>";
 }
 
-// Tạo bảng jobseeker_profile
+// Tạo bảng ho_so_khach_hang
 
 $stmt = $conn->query("CREATE TABLE IF NOT EXISTS payment_orders (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -77,7 +77,7 @@ if ($paymentProviderColumn && $paymentProviderColumn->num_rows > 0) {
         $conn->query("ALTER TABLE payment_orders MODIFY provider_transaction_id VARCHAR(100) NULL UNIQUE");
     }
 }
-$stmt = $conn->query("CREATE TABLE IF NOT EXISTS jobseeker_profile (
+$stmt = $conn->query("CREATE TABLE IF NOT EXISTS ho_so_khach_hang(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     jobseeker_id INT UNSIGNED NOT NULL,
     profile_description TEXT,
@@ -93,13 +93,13 @@ $stmt = $conn->query("CREATE TABLE IF NOT EXISTS jobseeker_profile (
     FOREIGN KEY (jobseeker_id) REFERENCES user(id) ON DELETE CASCADE
 )");
 if ($stmt === TRUE) {
-    echo "Table jobseeker_profile created successfully <br>";
+    echo "Table ho_so_khach_hang created successfully <br>";
 } else {
     echo "Error creating table: " . $conn->error;
 }
 
-// Tạo bảng employer_profile
-$stmt = $conn->query("CREATE TABLE IF NOT EXISTS employer_profile (
+// Tạo bảng ho_so_hoa_giai_vien
+$stmt = $conn->query("CREATE TABLE IF NOT EXISTS ho_so_hoa_giai_vien (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     employer_id INT UNSIGNED NOT NULL,
     profile_description TEXT, -- Có thể để NULL nếu không bắt buộc
@@ -115,7 +115,7 @@ $stmt = $conn->query("CREATE TABLE IF NOT EXISTS employer_profile (
     FOREIGN KEY (employer_id) REFERENCES user(id) ON DELETE CASCADE
 )");
 if ($stmt === TRUE) {
-    echo "Table employer_profile created successfully <br>";
+    echo "Table ho_so_hoa_giai_vien created successfully <br>";
 } else {
     echo "Error creating table: " . $conn->error;
 }
@@ -177,7 +177,7 @@ if ($prominentEmailSentAtColumn && $prominentEmailSentAtColumn->num_rows === 0) 
 }
 
 // Tạo bảng job
-$stmt = $conn->query("CREATE TABLE IF NOT EXISTS job (
+$stmt = $conn->query("CREATE TABLE IF NOT EXISTS hoa_giai_vien (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     posted_by_employer_id INT UNSIGNED NOT NULL,
     company_id INT(6) UNSIGNED NOT NULL, -- Cột liên kết với bảng company
@@ -207,7 +207,7 @@ $stmt = $conn->query("CREATE TABLE IF NOT EXISTS job (
     FOREIGN KEY (company_id) REFERENCES company(id) ON DELETE CASCADE ON UPDATE CASCADE
 )");
 if ($stmt === TRUE) {
-    echo "Table job created successfully <br>";
+    echo "Table hoa_giai_vien created successfully <br>";
 } else {
     echo "Error creating table: " . $conn->error;
 }
@@ -231,7 +231,7 @@ $stmt = $conn->query("CREATE TABLE IF NOT EXISTS job_payments (
     INDEX idx_job_payments_employer (employer_id),
     INDEX idx_job_payments_job (job_id),
     CONSTRAINT fk_job_payments_employer FOREIGN KEY (employer_id) REFERENCES user(id) ON DELETE CASCADE,
-    CONSTRAINT fk_job_payments_job FOREIGN KEY (job_id) REFERENCES job(id) ON DELETE SET NULL
+    CONSTRAINT fk_job_payments_job FOREIGN KEY (job_id) REFERENCES hoa_giai_vien(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 if ($stmt !== TRUE) {
     echo "Error creating job_payments table: " . $conn->error . "<br>";
@@ -253,7 +253,7 @@ $stmt = $conn->query("CREATE TABLE IF NOT EXISTS application (
     hidden_from_employer BOOLEAN DEFAULT FALSE,
     UNIQUE (job_id, jobseeker_id),
     numbered_of_fifth_application INT UNSIGNED DEFAULT 1,
-    FOREIGN KEY (job_id) REFERENCES job(id) ON DELETE CASCADE,
+    FOREIGN KEY (job_id) REFERENCES hoa_giai_vien(id) ON DELETE CASCADE,
     FOREIGN KEY (jobseeker_id) REFERENCES user(id) ON DELETE CASCADE
 )");
 if ($stmt === TRUE) {
@@ -327,7 +327,7 @@ $stmt = $conn->query("CREATE TABLE IF NOT EXISTS job_interest_count (
     jobseeker_id INT(6) UNSIGNED NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY unique_job_interest (job_id, jobseeker_id),
-    FOREIGN KEY (job_id) REFERENCES job(id) ON DELETE CASCADE,
+    FOREIGN KEY (job_id) REFERENCES hoa_giai_vien(id) ON DELETE CASCADE,
     FOREIGN KEY (jobseeker_id) REFERENCES user(id) ON DELETE CASCADE
 )");
 if ($stmt === TRUE) {
@@ -366,7 +366,7 @@ $stmt = $conn->query("CREATE TABLE IF NOT EXISTS saved_jobs (
     job_id INT UNSIGNED NOT NULL,
     saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
-    FOREIGN KEY (job_id) REFERENCES job(id) ON DELETE CASCADE,
+    FOREIGN KEY (job_id) REFERENCES hoa_giai_vien(id) ON DELETE CASCADE,
     UNIQUE (user_id, job_id)
 )");
 if ($stmt === TRUE) {
@@ -595,7 +595,7 @@ if ($stmt === TRUE) {
 // }
 
 // if (!empty($job_rows)) {
-//     $job_insert_sql = "INSERT INTO job (
+//     $job_insert_sql = "INSERT INTO hoa_giai_vien (
 //         posted_by_employer_id,
 //         company_id,
 //         job_title,

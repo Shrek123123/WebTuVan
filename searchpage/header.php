@@ -449,7 +449,7 @@ if ($jobseeker_id > 0) {
                         $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
                         if (!$conn->connect_error) {
-                            $sql = "SELECT profile_pic FROM jobseeker_profile WHERE jobseeker_id = ?";
+                            $sql = "SELECT profile_pic FROM ho_so_khach_hang WHERE jobseeker_id = ?";
                             $stmt = $conn->prepare($sql);
                             $stmt->bind_param("i", $jobseeker_id);
                             $stmt->execute();

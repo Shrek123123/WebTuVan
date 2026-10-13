@@ -602,7 +602,7 @@ function sendEmployerJobPaymentConfirmation($conn, int $paymentId): bool {
         return false;
     }
 
-    $stmt = $conn->prepare('SELECT u.email, j.job_title, j.post_duration, p.amount FROM job_payments p JOIN user u ON u.id = p.employer_id JOIN job j ON j.id = p.job_id WHERE p.id = ? AND p.status = \'paid\' LIMIT 1');
+    $stmt = $conn->prepare('SELECT u.email, j.job_title, j.post_duration, p.amount FROM job_payments p JOIN user u ON u.id = p.employer_id JOIN hoa_giai_vien j ON j.id = p.job_id WHERE p.id = ? AND p.status = \'paid\' LIMIT 1');
     if (!$stmt) {
         $conn->query("UPDATE job_payments SET confirmation_email_status = 'pending' WHERE id = " . $paymentId . " AND confirmation_email_status = 'sending'");
         return false;
@@ -728,13 +728,13 @@ function reconcileJobPaymentOrder($conn, $orderCode) {
         }
         $companyStmt->close();
 
-        $numberStmt = $conn->prepare('SELECT COALESCE(MAX(job_post_number_by_employer), 0) + 1 AS next_number FROM job WHERE posted_by_employer_id = ? FOR UPDATE');
+        $numberStmt = $conn->prepare('SELECT COALESCE(MAX(job_post_number_by_employer), 0) + 1 AS next_number FROM hoa_giai_vien WHERE posted_by_employer_id = ? FOR UPDATE');
         $numberStmt->bind_param('i', $employerId);
         $numberStmt->execute();
         $nextNumber = (int) ($numberStmt->get_result()->fetch_assoc()['next_number'] ?? 1);
         $numberStmt->close();
 
-        $jobStmt = $conn->prepare('INSERT INTO job (posted_by_employer_id, company_id, job_post_number_by_employer, job_title, job_description, job_location, salary, post_duration, contact_email, contact_phone, required_certification, job_experience, job_requirement, job_benefit, no_employee_needed, job_position, job_detailed_location, job_location_district, job_type, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        $jobStmt = $conn->prepare('INSERT INTO hoa_giai_vien (posted_by_employer_id, company_id, job_post_number_by_employer, job_title, job_description, job_location, salary, post_duration, contact_email, contact_phone, required_certification, job_experience, job_requirement, job_benefit, no_employee_needed, job_position, job_detailed_location, job_location_district, job_type, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
         $jobStatus = 'pending_review';
         $jobStmt->bind_param('iiissssissssssisssss', $employerId, $companyId, $nextNumber, $job['job_title'], $job['job_description'], $job['job_location'], $job['salary'], $job['post_duration'], $job['contact_email'], $job['contact_phone'], $job['required_certification'], $job['job_experience'], $job['job_requirement'], $job['job_benefit'], $job['no_employee_needed'], $job['job_position'], $job['job_detailed_location'], $job['job_location_district'], $job['job_type'], $jobStatus);
         if (!$jobStmt->execute()) {
@@ -825,7 +825,7 @@ function sendFiveApplicationsNotification($conn, $jobId) {
 
     $jobStmt = $conn->prepare(
         'SELECT u.email, j.job_title
-         FROM job j
+         FROM hoa_giai_vien j
          JOIN user u ON u.id = j.posted_by_employer_id
          WHERE j.id = ?
          LIMIT 1'

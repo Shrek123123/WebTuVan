@@ -58,7 +58,7 @@ $interested_jobs = [];
 $sql = 'SELECT j.id, j.job_title, j.job_location, j.salary, j.job_type,
             c.company_name, c.company_logo, jic.created_at AS interested_at
         FROM job_interest_count jic
-        INNER JOIN job j ON j.id = jic.job_id
+        INNER JOIN hoa_giai_vien j ON j.id = jic.job_id
         LEFT JOIN company c ON c.id = j.company_id
         WHERE jic.jobseeker_id = ?
         ORDER BY jic.created_at DESC';

@@ -7,7 +7,7 @@ $job_id = isset($_GET['job_id']) ? intval($_GET['job_id']) : 0;
 $job_data = null;
 
 if ($job_id > 0 && isset($conn) && $conn->ping()) {
-    $sql = "SELECT * FROM job WHERE id = ?";
+    $sql = "SELECT * FROM hoa_giai_vien WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $job_id);
     $stmt->execute();

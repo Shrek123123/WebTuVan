@@ -234,7 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggl
                     if ($job_id > 0) {
                         $stmt = $conn->prepare(
                             "SELECT j.*, c.company_name, c.company_logo, c.industry, c.company_size, c.company_address, c.banner_logo " .
-                            "FROM job j LEFT JOIN company c ON c.id = j.company_id " .
+                            "FROM hoa_giai_vien j LEFT JOIN company c ON c.id = j.company_id " .
                             "WHERE j.id = ? AND (c.status IS NULL OR c.status NOT IN ('pending_review', 'rejected'))"
                         );
                         $stmt->bind_param("i", $job_id);
@@ -388,7 +388,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggl
                 if ($job && !empty($job['industry'])) {
                     $stmt_related = $conn->prepare(
                         "SELECT j.id, j.job_title, j.salary
-                         FROM job j
+                         FROM hoa_giai_vien j
                          INNER JOIN company c ON c.id = j.company_id
                          WHERE c.industry = ? AND j.id != ?
                          AND c.status NOT IN ('pending_review', 'rejected')

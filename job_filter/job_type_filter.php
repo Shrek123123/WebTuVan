@@ -54,7 +54,7 @@ if (isset($jobTypeMap[$job_type])) {
 
 // Query lấy job theo job_type
 $stmt = $conn->prepare("SELECT j.id, j.job_title, c.company_logo AS company_logo, c.company_name AS company_name, j.salary, j.job_location, j.created_at, j.post_duration
-  FROM job j
+  FROM hoa_giai_vien j
   LEFT JOIN company c ON c.id = j.company_id
   WHERE LOWER(j.job_type) = ?
   ORDER BY j.created_at DESC");

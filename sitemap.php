@@ -31,7 +31,7 @@ $sql = "
         j.id,
         j.created_at,
         j.post_duration
-    FROM job j
+    FROM hoa_giai_vien j
     LEFT JOIN company c ON c.id = j.company_id
     WHERE
         (c.status IS NULL OR c.status NOT IN ('pending_review', 'rejected'))

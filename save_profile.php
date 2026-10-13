@@ -59,8 +59,8 @@ if (!$stmtUser->execute()) {
 }
 $stmtUser->close();
 
-// Kiểm tra bản ghi jobseeker_profile đã tồn tại
-$stmtCheck = $mysqli->prepare("SELECT COUNT(*) FROM jobseeker_profile WHERE jobseeker_id = ?");
+// Kiểm tra bản ghi ho_so_khach_hang đã tồn tại
+$stmtCheck = $mysqli->prepare("SELECT COUNT(*) FROM ho_so_khach_hang WHERE jobseeker_id = ?");
 $stmtCheck->bind_param("i", $jobseeker_id);
 $stmtCheck->execute();
 $stmtCheck->bind_result($count);
@@ -68,12 +68,12 @@ $stmtCheck->fetch();
 $stmtCheck->close();
 
 if ($count > 0) {
-    $stmt = $mysqli->prepare("UPDATE jobseeker_profile SET
+    $stmt = $mysqli->prepare("UPDATE ho_so_khach_hang SET
         profile_description = ?, gender = ?, address = ?, date_of_birth = ?, marital_status = ?
         WHERE jobseeker_id = ?");
     $stmt->bind_param("sssssi", $profile_description, $gender, $address, $date_of_birth, $marital_status, $jobseeker_id);
 } else {
-    $stmt = $mysqli->prepare("INSERT INTO jobseeker_profile
+    $stmt = $mysqli->prepare("INSERT INTO ho_so_khach_hang
         (jobseeker_id, profile_description, gender, address, date_of_birth, marital_status)
         VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->bind_param("isssss", $jobseeker_id, $profile_description, $gender, $address, $date_of_birth, $marital_status);

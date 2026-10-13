@@ -1,8 +1,8 @@
 <?php
 define('DB_HOST', 'localhost');
-define('DB_USER', 'sql_viecn_22679b');
-define('DB_PASS', '9bd597303441b');
-define('DB_NAME', 'sql_viecn_22679b');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_NAME', 'web_tu_van_mediato');
 // define('DB_HOST', 'localhost');
 // define('DB_USER', 'root');
 // define('DB_PASS', '');

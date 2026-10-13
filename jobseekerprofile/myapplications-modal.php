@@ -37,7 +37,7 @@ if ($jobseeker_id <= 0) {
                         FROM
                             application a
                         JOIN
-                            job j ON a.job_id = j.id
+                            hoa_giai_vien j ON a.job_id = j.id
                         WHERE
                             a.jobseeker_id = ?
                         ORDER BY

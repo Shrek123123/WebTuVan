@@ -45,7 +45,7 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
             // Check if $conn is defined and connected before querying
             if (isset($conn) && $conn->ping()) {
                 // Query ALL columns for editing purposes
-                $sql = "SELECT * FROM job WHERE posted_by_employer_id = ?";
+                $sql = "SELECT * FROM hoa_giai_vien WHERE posted_by_employer_id = ?";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("i", $employer_id);
                 $stmt->execute();

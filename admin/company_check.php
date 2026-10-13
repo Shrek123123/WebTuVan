@@ -186,7 +186,7 @@ if ($resC) {
     $pendingCompanies = (int) ($resC->fetch_assoc()['total'] ?? 0);
     $resC->close();
 }
-$resJ = $conn->query("SELECT COUNT(*) AS total FROM job WHERE status = 'pending_review'");
+$resJ = $conn->query("SELECT COUNT(*) AS total FROM hoa_giai_vien WHERE status = 'pending_review'");
 if ($resJ) {
     $pendingJobs = (int) ($resJ->fetch_assoc()['total'] ?? 0);
     $resJ->close();

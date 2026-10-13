@@ -18,7 +18,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                 j.no_employee_needed, j.salary, j.post_duration, j.contact_email,
                 j.contact_phone, j.job_type, c.industry AS job_category, j.required_certification,
                 j.job_experience, c.company_logo, j.created_at, j.last_updated_at, j.status, j.job_detailed_location, j.job_location_district
-            FROM job j
+            FROM hoa_giai_vien j
             LEFT JOIN company c ON c.id = j.company_id
             WHERE j.id = ? AND j.status = 'pending_review'"; // Chỉ lấy job đang chờ duyệt
     $stmt = $conn->prepare($sql);
@@ -39,7 +39,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 $pending_jobs_badge = 0;
 $pending_companies_badge = 0;
 require_once '../config.php';
-$res_pending_jobs = $conn->query("SELECT COUNT(*) AS total FROM job WHERE status = 'pending_review'");
+$res_pending_jobs = $conn->query("SELECT COUNT(*) AS total FROM hoa_giai_vien WHERE status = 'pending_review'");
 if ($res_pending_jobs) {
     $pending_jobs_badge = (int) ($res_pending_jobs->fetch_assoc()['total'] ?? 0);
     $res_pending_jobs->close();

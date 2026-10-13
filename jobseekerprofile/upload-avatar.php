@@ -89,7 +89,7 @@ if (!move_uploaded_file($file['tmp_name'], $destination)) {
 }
 
 $db_path = 'uploads/jobseekerprofilepic/' . $new_filename;
-$find_stmt = $conn->prepare('SELECT id FROM jobseeker_profile WHERE jobseeker_id = ? LIMIT 1');
+$find_stmt = $conn->prepare('SELECT id FROM ho_so_khach_hang WHERE jobseeker_id = ? LIMIT 1');
 if (!$find_stmt) {
     unlink($destination);
     sendAvatarUploadResponse(['status' => 'error', 'message' => 'Không thể kiểm tra hồ sơ ứng viên: ' . $conn->error], 500);
@@ -101,7 +101,7 @@ $exists = $find_result && $find_result->num_rows > 0;
 $find_stmt->close();
 
 if ($exists) {
-    $save_stmt = $conn->prepare('UPDATE jobseeker_profile SET profile_pic = ? WHERE jobseeker_id = ?');
+    $save_stmt = $conn->prepare('UPDATE ho_so_khach_hang SET profile_pic = ? WHERE jobseeker_id = ?');
     if ($save_stmt) {
         $save_stmt->bind_param('si', $db_path, $jobseeker_id);
         $saved = $save_stmt->execute();
@@ -112,7 +112,7 @@ if ($exists) {
         $save_error = $conn->error;
     }
 } else {
-    $save_stmt = $conn->prepare('INSERT INTO jobseeker_profile (jobseeker_id, profile_pic) VALUES (?, ?)');
+    $save_stmt = $conn->prepare('INSERT INTO ho_so_khach_hang (jobseeker_id, profile_pic) VALUES (?, ?)');
     if ($save_stmt) {
         $save_stmt->bind_param('is', $jobseeker_id, $db_path);
         $saved = $save_stmt->execute();

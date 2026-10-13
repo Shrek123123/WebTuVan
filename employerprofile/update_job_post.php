@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($conn) && $conn->ping()) {
         $beforeJob = null;
-        $beforeStmt = $conn->prepare('SELECT * FROM job WHERE id = ? AND posted_by_employer_id = ? LIMIT 1');
+        $beforeStmt = $conn->prepare('SELECT * FROM hoa_giai_vien WHERE id = ? AND posted_by_employer_id = ? LIMIT 1');
         if ($beforeStmt) {
             $beforeStmt->bind_param('ii', $job_id, $posted_by_employer_id);
             if ($beforeStmt->execute()) {
@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'company_logo' => 'Logo công ty',
         ];
 
-        $sql = "UPDATE job SET
+        $sql = "UPDATE hoa_giai_vien SET
                     company_name = ?,
                     company_size = ?,
                     job_title = ?,

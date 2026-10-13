@@ -60,7 +60,7 @@ if ($category !== '') {
 }
 $params = [];
 $sql = "SELECT j.id, j.job_title, c.company_logo AS company_logo, c.company_name AS company_name, j.salary, j.job_location, j.created_at, j.post_duration, c.industry AS industry
-        FROM job j
+        FROM hoa_giai_vien j
         LEFT JOIN company c ON c.id = j.company_id";
 if ($category !== '') {
   $sql .= " WHERE LOWER(TRIM(c.industry)) = ?";

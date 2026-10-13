@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['job_id'], $_POST['act
     }
 
     $detailsStmt = $conn->prepare("SELECT j.job_title, c.company_name, u.email AS employer_email
-        FROM job j
+        FROM hoa_giai_vien j
         LEFT JOIN company c ON c.id = j.company_id
         JOIN user u ON u.id = j.posted_by_employer_id
         WHERE j.id = ?
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['job_id'], $_POST['act
         exit();
     }
 
-    $stmt = $conn->prepare("UPDATE job SET status = ?, admin_notes = ? WHERE id = ?");
+    $stmt = $conn->prepare("UPDATE hoa_giai_vien SET status = ?, admin_notes = ? WHERE id = ?");
     if ($stmt) {
         $stmt->bind_param("ssi", $newStatus, $adminNote, $jobId);
         if ($stmt->execute()) {

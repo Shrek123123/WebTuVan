@@ -162,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 
     try {
-  $free_post_check_stmt = $conn->prepare("SELECT 1 FROM job WHERE posted_by_employer_id = ? AND post_duration = 30 LIMIT 1");
+  $free_post_check_stmt = $conn->prepare("SELECT 1 FROM hoa_giai_vien WHERE posted_by_employer_id = ? AND post_duration = 30 LIMIT 1");
   if (!$free_post_check_stmt) {
       throw new RuntimeException('Không thể kiểm tra lượt đăng miễn phí: ' . $conn->error);
   }
@@ -172,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $free_post_check_stmt->close();
 
   if (!$has_free_30_day_post) {
-      $number_stmt = $conn->prepare('SELECT COALESCE(MAX(job_post_number_by_employer), 0) + 1 AS next_number FROM job WHERE posted_by_employer_id = ?');
+      $number_stmt = $conn->prepare('SELECT COALESCE(MAX(job_post_number_by_employer), 0) + 1 AS next_number FROM hoa_giai_vien WHERE posted_by_employer_id = ?');
       if (!$number_stmt) {
           throw new RuntimeException('Không thể tạo số thứ tự bài đăng: ' . $conn->error);
       }
@@ -182,7 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $number_stmt->close();
 
     $free_job_status = 'approved';
-      $free_job_stmt = $conn->prepare('INSERT INTO job (posted_by_employer_id, company_id, job_post_number_by_employer, job_title, job_description, job_location, salary, post_duration, contact_email, contact_phone, required_certification, job_experience, job_requirement, job_benefit, no_employee_needed, job_position, job_detailed_location, job_location_district, job_type, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+      $free_job_stmt = $conn->prepare('INSERT INTO hoa_giai_vien (posted_by_employer_id, company_id, job_post_number_by_employer, job_title, job_description, job_location, salary, post_duration, contact_email, contact_phone, required_certification, job_experience, job_requirement, job_benefit, no_employee_needed, job_position, job_detailed_location, job_location_district, job_type, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
       if (!$free_job_stmt) {
           throw new RuntimeException('Không thể tạo bài đăng miễn phí: ' . $conn->error);
       }
@@ -942,7 +942,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $total_applications = 0;
                 $employerid = $_SESSION['employerid'] ?? 0;
                 if ($employerid > 0 && isset($conn) && $conn->ping()) {
-                    $sql_total = "SELECT COUNT(a.id) AS total FROM application a JOIN job j ON a.job_id = j.id WHERE j.posted_by_employer_id = ? AND (a.hidden_from_employer = 0 OR a.hidden_from_employer IS NULL)";
+                    $sql_total = "SELECT COUNT(a.id) AS total FROM application a JOIN hoa_giai_vien j ON a.job_id = j.id WHERE j.posted_by_employer_id = ? AND (a.hidden_from_employer = 0 OR a.hidden_from_employer IS NULL)";
                     $stmt_total = $conn->prepare($sql_total);
                     $stmt_total->bind_param("i", $employerid);
                     $stmt_total->execute();
@@ -961,7 +961,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $applications = [];
                 $employerid = $_SESSION['employerid'] ?? 0;
                 if ($employerid > 0 && isset($conn) && $conn->ping()) {
-                    $sql_app = "SELECT a.fullname, a.status, j.job_title FROM application a JOIN job j ON a.job_id = j.id WHERE j.posted_by_employer_id = ? AND (a.hidden_from_employer = 0 OR a.hidden_from_employer IS NULL) ORDER BY a.id DESC LIMIT 2";
+                    $sql_app = "SELECT a.fullname, a.status, j.job_title FROM application a JOIN hoa_giai_vien j ON a.job_id = j.id WHERE j.posted_by_employer_id = ? AND (a.hidden_from_employer = 0 OR a.hidden_from_employer IS NULL) ORDER BY a.id DESC LIMIT 2";
                     $stmt_app = $conn->prepare($sql_app);
                     $stmt_app->bind_param("i", $employerid);
                     $stmt_app->execute();

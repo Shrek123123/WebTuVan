@@ -831,10 +831,10 @@ foreach ($industryOptionKeys as $industryKey) {
                 c.company_name AS company_name, c.industry AS industry,
                 j.salary, j.job_location, j.job_type, j.job_experience, j.job_position,
                 j.created_at, j.post_duration
-                FROM job j
+                FROM hoa_giai_vien j
                 LEFT JOIN company c ON c.id = j.company_id
                 LEFT JOIN (SELECT company_id, MIN(paid_at) AS featured_at FROM prominent_company WHERE status = 'paid' GROUP BY company_id) pc_featured ON pc_featured.company_id = j.company_id";
-            $sql_count_base = "SELECT COUNT(*) as total FROM job j LEFT JOIN company c ON c.id = j.company_id";
+            $sql_count_base = "SELECT COUNT(*) as total FROM hoa_giai_vien j LEFT JOIN company c ON c.id = j.company_id";
 
             $conditions[] = "j.status = 'approved'";
             // Không hiển thị job card nếu công ty đang chờ duyệt hoặc đã bị từ chối

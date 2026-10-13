@@ -17,7 +17,7 @@ if (!isset($_SESSION['usernameemployer'])) {
 $hasFree30DayPost = false;
 if (!empty($_SESSION['employerid'])) {
   $freePostEmployerId = (int) $_SESSION['employerid'];
-  $freePostCheckStmt = $conn->prepare("SELECT 1 FROM job WHERE posted_by_employer_id = ? AND post_duration = 30 LIMIT 1");
+  $freePostCheckStmt = $conn->prepare("SELECT 1 FROM hoa_giai_vien WHERE posted_by_employer_id = ? AND post_duration = 30 LIMIT 1");
   if ($freePostCheckStmt) {
     $freePostCheckStmt->bind_param("i", $freePostEmployerId);
     $freePostCheckStmt->execute();
@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   // Database connection and insertion logic here
   // Lấy số thứ tự bài đăng mới nhất của employer này
-  $sql = "SELECT MAX(job_post_number_by_employer) AS last_number FROM job WHERE posted_by_employer_id = ?";
+  $sql = "SELECT MAX(job_post_number_by_employer) AS last_number FROM hoa_giai_vien WHERE posted_by_employer_id = ?";
   $stmt_number = $conn->prepare($sql);
   if (!$stmt_number) {
     echo "<script>alert('Error preparing statement for job number: {$conn->error}');</script>";
@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   $new_job_number = $last_number + 1;
 
-  $stmt = $conn->prepare("INSERT INTO job (
+  $stmt = $conn->prepare("INSERT INTO hoa_giai_vien (
     posted_by_employer_id, company_id, job_post_number_by_employer, job_title, job_description, job_location, salary, contact_email, contact_phone, job_type, required_certification, job_experience, job_requirement, job_benefit, no_employee_needed, job_position, job_detailed_location, job_location_district, post_duration, status
   ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 

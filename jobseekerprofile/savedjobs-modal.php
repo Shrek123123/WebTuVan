@@ -48,7 +48,7 @@ function t($key, $replace = [])
                 $jobid = $row_saved['job_id'];
 
                 // Lấy thông tin job từ bảng job
-                $sql_job = "SELECT * FROM job WHERE id = ?";
+                $sql_job = "SELECT * FROM hoa_giai_vien WHERE id = ?";
                 $stmt_job = $conn->prepare($sql_job);
                 $stmt_job->bind_param("i", $jobid);
                 $stmt_job->execute();

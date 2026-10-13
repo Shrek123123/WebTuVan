@@ -831,7 +831,7 @@ $employer_id = $_SESSION['employerid'] ?? 0;
                 $total_applications = 0;
                 $employerid = $_SESSION['employerid'] ?? 0;
                 if ($employerid > 0 && isset($conn) && $conn->ping()) {
-                    $sql_total = "SELECT COUNT(a.id) AS total FROM application a JOIN job j ON a.job_id = j.id WHERE j.posted_by_employer_id = ? AND (a.hidden_from_employer = 0 OR a.hidden_from_employer IS NULL)";
+                    $sql_total = "SELECT COUNT(a.id) AS total FROM application a JOIN hoa_giai_vien j ON a.job_id = j.id WHERE j.posted_by_employer_id = ? AND (a.hidden_from_employer = 0 OR a.hidden_from_employer IS NULL)";
                     $stmt_total = $conn->prepare($sql_total);
                     $stmt_total->bind_param("i", $employerid);
                     $stmt_total->execute();
@@ -850,7 +850,7 @@ $employer_id = $_SESSION['employerid'] ?? 0;
                 $applications = [];
                 $employerid = $_SESSION['employerid'] ?? 0;
                 if ($employerid > 0 && isset($conn) && $conn->ping()) {
-                    $sql_app = "SELECT a.fullname, a.status, j.job_title FROM application a JOIN job j ON a.job_id = j.id WHERE j.posted_by_employer_id = ? AND (a.hidden_from_employer = 0 OR a.hidden_from_employer IS NULL) ORDER BY a.id DESC LIMIT 2";
+                    $sql_app = "SELECT a.fullname, a.status, j.job_title FROM application a JOIN hoa_giai_vien j ON a.job_id = j.id WHERE j.posted_by_employer_id = ? AND (a.hidden_from_employer = 0 OR a.hidden_from_employer IS NULL) ORDER BY a.id DESC LIMIT 2";
                     $stmt_app = $conn->prepare($sql_app);
                     $stmt_app->bind_param("i", $employerid);
                     $stmt_app->execute();
@@ -904,7 +904,7 @@ $employer_id = $_SESSION['employerid'] ?? 0;
                     <div style="display: flex; flex-direction: column; gap: 18px;">
                         <?php
                         if ($employer_id > 0 && isset($conn) && $conn->ping()) {
-                            $sql = "SELECT job.*, (SELECT COUNT(a.id) FROM application a WHERE a.job_id = job.id) AS application_count FROM job WHERE posted_by_employer_id = ? ORDER BY created_at DESC";
+                            $sql = "SELECT job.*, (SELECT COUNT(a.id) FROM application a WHERE a.job_id = job.id) AS application_count FROM hoa_giai_vien WHERE posted_by_employer_id = ? ORDER BY created_at DESC";
                             $stmt = $conn->prepare($sql);
                             $stmt->bind_param("i", $employer_id);
                             $stmt->execute();

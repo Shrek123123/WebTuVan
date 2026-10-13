@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'hide') {
         // Ẩn đơn ứng tuyển
-        $sql = "UPDATE application SET hidden_from_employer = 1 WHERE id = ? AND job_id IN (SELECT id FROM job WHERE posted_by_employer_id = ?)";
+        $sql = "UPDATE application SET hidden_from_employer = 1 WHERE id = ? AND job_id IN (SELECT id FROM hoa_giai_vien WHERE posted_by_employer_id = ?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ii", $application_id, $employerid);
         
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $detailsStmt = $conn->prepare(
             "SELECT a.email, j.job_title, c.company_name
              FROM application a
-             JOIN job j ON a.job_id = j.id
+             JOIN hoa_giai_vien j ON a.job_id = j.id
              JOIN company c ON j.company_id = c.id
              WHERE a.id = ? AND j.posted_by_employer_id = ?
              LIMIT 1"
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
         
-        $sql = "UPDATE application SET status = ? WHERE id = ? AND job_id IN (SELECT id FROM job WHERE posted_by_employer_id = ?)";
+        $sql = "UPDATE application SET status = ? WHERE id = ? AND job_id IN (SELECT id FROM hoa_giai_vien WHERE posted_by_employer_id = ?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("sii", $new_status, $application_id, $employerid);
         

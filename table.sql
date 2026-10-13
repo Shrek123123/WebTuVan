@@ -1,4 +1,4 @@
-USE `sql_viecnhe_io_vn`;
+USE `web_tu_van`;
 
 CREATE TABLE IF NOT EXISTS `user` (
     id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -54,7 +54,7 @@ ALTER TABLE payment_orders
 ALTER TABLE payment_orders
     MODIFY COLUMN provider_transaction_id VARCHAR(100) NULL;
 
-CREATE TABLE IF NOT EXISTS jobseeker_profile (
+CREATE TABLE IF NOT EXISTS ho_so_khach_hang (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     jobseeker_id INT UNSIGNED NOT NULL,
     profile_description TEXT,
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS jobseeker_profile (
     FOREIGN KEY (jobseeker_id) REFERENCES `user`(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS employer_profile (
+CREATE TABLE IF NOT EXISTS ho_so_hoa_giai_vien (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     employer_id INT UNSIGNED NOT NULL,
     profile_description TEXT,
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS prominent_company (
     CONSTRAINT fk_prominent_company_employer FOREIGN KEY (employer_id) REFERENCES `user`(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS job (
+CREATE TABLE IF NOT EXISTS hoa_giai_vien (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     posted_by_employer_id INT UNSIGNED NOT NULL,
     company_id INT(6) UNSIGNED NOT NULL,
@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS job_payments (
     INDEX idx_job_payments_employer (employer_id),
     INDEX idx_job_payments_job (job_id),
     CONSTRAINT fk_job_payments_employer FOREIGN KEY (employer_id) REFERENCES `user`(id) ON DELETE CASCADE,
-    CONSTRAINT fk_job_payments_job FOREIGN KEY (job_id) REFERENCES job(id) ON DELETE SET NULL
+    CONSTRAINT fk_job_payments_job FOREIGN KEY (job_id) REFERENCES hoa_giai_vien(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS application (
@@ -191,7 +191,7 @@ CREATE TABLE IF NOT EXISTS application (
     hidden_from_employer BOOLEAN DEFAULT FALSE,
     UNIQUE (job_id, jobseeker_id),
     numbered_of_fifth_application INT UNSIGNED DEFAULT 1,
-    FOREIGN KEY (job_id) REFERENCES job(id) ON DELETE CASCADE,
+    FOREIGN KEY (job_id) REFERENCES hoa_giai_vien(id) ON DELETE CASCADE,
     FOREIGN KEY (jobseeker_id) REFERENCES `user`(id) ON DELETE CASCADE
 );
 
@@ -224,7 +224,7 @@ CREATE TABLE IF NOT EXISTS job_interest_count (
     jobseeker_id INT(6) UNSIGNED NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY unique_job_interest (job_id, jobseeker_id),
-    FOREIGN KEY (job_id) REFERENCES job(id) ON DELETE CASCADE,
+    FOREIGN KEY (job_id) REFERENCES hoa_giai_vien(id) ON DELETE CASCADE,
     FOREIGN KEY (jobseeker_id) REFERENCES `user`(id) ON DELETE CASCADE
 );
 
@@ -234,7 +234,7 @@ CREATE TABLE IF NOT EXISTS saved_jobs (
     job_id INT UNSIGNED NOT NULL,
     saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE CASCADE,
-    FOREIGN KEY (job_id) REFERENCES job(id) ON DELETE CASCADE,
+    FOREIGN KEY (job_id) REFERENCES hoa_giai_vien(id) ON DELETE CASCADE,
     UNIQUE (user_id, job_id)
 );
 

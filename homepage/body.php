@@ -1024,7 +1024,7 @@ $savedJobIdsJson = json_encode($savedJobIds);
         }
 
         $count_sql = "SELECT COUNT(*) as total
-            FROM job j
+            FROM hoa_giai_vien j
             LEFT JOIN company c ON c.id = j.company_id
             WHERE j.status = 'approved'
             AND (c.status IS NULL OR c.status NOT IN ('pending_review', 'rejected'))";
@@ -1052,7 +1052,7 @@ $savedJobIdsJson = json_encode($savedJobIds);
         $offset = ($page - 1) * $jobs_per_page;
         $sql = "SELECT j.id, j.job_title, j.salary, j.job_location, j.job_type, j.job_experience, j.created_at, j.post_duration,
                         c.company_name, c.company_logo, c.industry AS industry
-                        FROM job j
+                        FROM hoa_giai_vien j
                         LEFT JOIN company c ON c.id = j.company_id
                         LEFT JOIN (SELECT company_id, MIN(paid_at) AS featured_at FROM prominent_company WHERE status = 'paid' GROUP BY company_id) pc_featured ON pc_featured.company_id = j.company_id
                         WHERE j.status = 'approved'

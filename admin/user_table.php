@@ -225,7 +225,7 @@ foreach ($users as $user) {
 // --- Số mục chờ duyệt cho badge trên sidebar ---
 $pending_jobs_badge = 0;
 $pending_companies_badge = 0;
-$res_pending_jobs = $conn->query("SELECT COUNT(*) AS total FROM job WHERE status = 'pending_review'");
+$res_pending_jobs = $conn->query("SELECT COUNT(*) AS total FROM hoa_giai_vien WHERE status = 'pending_review'");
 if ($res_pending_jobs) {
     $pending_jobs_badge = (int) ($res_pending_jobs->fetch_assoc()['total'] ?? 0);
     $res_pending_jobs->close();

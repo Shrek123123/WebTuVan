@@ -17,7 +17,7 @@ include 'lang/' . $_SESSION['lang'] . '.php';
 $header_avatar = 'image/defaultavatar.jpg';
 if (isset($_SESSION['employerid'])) {
     $header_employer_id = (int) $_SESSION['employerid'];
-    $header_stmt = $conn->prepare("SELECT profile_pic FROM employer_profile WHERE employer_id = ? LIMIT 1");
+    $header_stmt = $conn->prepare("SELECT profile_pic FROM ho_so_hoa_giai_vien WHERE employer_id = ? LIMIT 1");
     if ($header_stmt) {
         $header_stmt->bind_param('i', $header_employer_id);
         $header_stmt->execute();

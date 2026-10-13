@@ -9,7 +9,7 @@ if (!isset($_SESSION['usernameadmin'])) { // Giả định 'usernameadmin' là b
     exit();
 }
 $sql = "SELECT j.id, j.job_title, c.company_name, j.posted_by_employer_id
-            FROM job j
+            FROM hoa_giai_vien j
             LEFT JOIN company c ON c.id = j.company_id
             WHERE j.status = 'pending_review'
             ORDER BY j.created_at ASC";
@@ -207,7 +207,7 @@ $sql = "SELECT j.id, j.job_title, c.company_name, j.posted_by_employer_id
 
         <?php
         $sql = "SELECT j.id, j.job_title, c.company_name, j.posted_by_employer_id
-            FROM job j
+            FROM hoa_giai_vien j
             LEFT JOIN company c ON c.id = j.company_id
             WHERE j.status = 'pending_review'
             ORDER BY j.created_at ASC";

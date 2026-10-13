@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
         if (isset($conn) && $conn->ping()) {
             // Ensure employer owns the job for this application
-            $checkSql = "SELECT j.posted_by_employer_id FROM application a JOIN job j ON a.job_id = j.id WHERE a.id = ? LIMIT 1";
+            $checkSql = "SELECT j.posted_by_employer_id FROM application a JOIN hoa_giai_vien j ON a.job_id = j.id WHERE a.id = ? LIMIT 1";
             $checkStmt = $conn->prepare($checkSql);
             if ($checkStmt) {
                 $checkStmt->bind_param("i", $application_id);
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         if (isset($conn) && $conn->ping()) {
             $detailsSql = "SELECT a.email, j.job_title, c.company_name
                            FROM application a
-                           JOIN job j ON a.job_id = j.id
+                           JOIN hoa_giai_vien j ON a.job_id = j.id
                            JOIN company c ON j.company_id = c.id
                            WHERE a.id = ? AND j.posted_by_employer_id = ?
                            LIMIT 1";
@@ -167,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 $employerid = $_SESSION['employerid'] ?? 0;
 $stmt = $conn->prepare("
     SELECT *
-    FROM job
+    FROM hoa_giai_vien
     WHERE id = ? AND posted_by_employer_id = ?
     LIMIT 1
 ");

@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    $sql = "DELETE FROM job WHERE id = ? AND posted_by_employer_id = ?";
+    $sql = "DELETE FROM hoa_giai_vien WHERE id = ? AND posted_by_employer_id = ?";
     $stmt = $conn->prepare($sql);
 
     if ($stmt) {

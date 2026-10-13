@@ -246,7 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_follow_company
 $related_jobs = [];
 if ($company_id_for_query > 0 && isset($conn)) {
     $job_sql = "SELECT id, job_title, job_location, salary, job_experience, created_at
-                FROM job
+                FROM hoa_giai_vien
                 WHERE company_id = ?
                 ORDER BY created_at ASC
                 LIMIT 6";

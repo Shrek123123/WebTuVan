@@ -675,7 +675,7 @@ $employername = $_SESSION['usernameemployer'] ?? 'Employer';
                 $total_applications = 0;
                 $employerid = $_SESSION['employerid'] ?? 0;
                 if ($employerid > 0 && isset($conn) && $conn->ping()) {
-                    $sql_total = "SELECT COUNT(a.id) AS total FROM application a JOIN job j ON a.job_id = j.id WHERE j.posted_by_employer_id = ? AND (a.hidden_from_employer = 0 OR a.hidden_from_employer IS NULL)";
+                    $sql_total = "SELECT COUNT(a.id) AS total FROM application a JOIN hoa_giai_vien j ON a.job_id = j.id WHERE j.posted_by_employer_id = ? AND (a.hidden_from_employer = 0 OR a.hidden_from_employer IS NULL)";
                     $stmt_total = $conn->prepare($sql_total);
                     $stmt_total->bind_param("i", $employerid);
                     $stmt_total->execute();
@@ -694,7 +694,7 @@ $employername = $_SESSION['usernameemployer'] ?? 'Employer';
                 $applications = [];
                 $employerid = $_SESSION['employerid'] ?? 0;
                 if ($employerid > 0 && isset($conn) && $conn->ping()) {
-                    $sql_app = "SELECT a.fullname, a.status, j.job_title FROM application a JOIN job j ON a.job_id = j.id WHERE j.posted_by_employer_id = ? AND (a.hidden_from_employer = 0 OR a.hidden_from_employer IS NULL) ORDER BY a.id DESC LIMIT 2";
+                    $sql_app = "SELECT a.fullname, a.status, j.job_title FROM application a JOIN hoa_giai_vien j ON a.job_id = j.id WHERE j.posted_by_employer_id = ? AND (a.hidden_from_employer = 0 OR a.hidden_from_employer IS NULL) ORDER BY a.id DESC LIMIT 2";
                     $stmt_app = $conn->prepare($sql_app);
                     $stmt_app->bind_param("i", $employerid);
                     $stmt_app->execute();
@@ -786,7 +786,7 @@ $employername = $_SESSION['usernameemployer'] ?? 'Employer';
                     } else {
                         if (isset($conn) && $conn->ping()) {
                             $beforeJob = null;
-                            $beforeStmt = $conn->prepare('SELECT j.*, c.company_name FROM job j LEFT JOIN company c ON c.id = j.company_id WHERE j.id = ? AND j.posted_by_employer_id = ? LIMIT 1');
+                            $beforeStmt = $conn->prepare('SELECT j.*, c.company_name FROM hoa_giai_vien j LEFT JOIN company c ON c.id = j.company_id WHERE j.id = ? AND j.posted_by_employer_id = ? LIMIT 1');
                             if ($beforeStmt) {
                                 $beforeStmt->bind_param('ii', $job_id, $posted_by_employer_id);
                                 if ($beforeStmt->execute()) {
@@ -828,7 +828,7 @@ $employername = $_SESSION['usernameemployer'] ?? 'Employer';
                                 'job_experience' => 'Kinh nghiệm yêu cầu',
                             ];
 
-                            $sql_update = "UPDATE job SET
+                            $sql_update = "UPDATE hoa_giai_vien SET
                                 job_title = ?, job_description = ?,
                                 job_benefit = ?, job_requirement = ?, job_location = ?, job_location_district = ?, no_employee_needed = ?,
                                 salary = ?, contact_email = ?, contact_phone = ?,
@@ -877,7 +877,7 @@ $employername = $_SESSION['usernameemployer'] ?? 'Employer';
                 // --- 4. LẤY DỮ LIỆU ĐỂ HIỂN THỊ LÊN FORM ---
                 $job_data = null;
                 if ($job_id > 0 && isset($conn) && $conn->ping()) {
-                    $sql_select = "SELECT * FROM job WHERE id = ?";
+                    $sql_select = "SELECT * FROM hoa_giai_vien WHERE id = ?";
                     $stmt_sel = $conn->prepare($sql_select);
                     $stmt_sel->bind_param("i", $job_id);
                     $stmt_sel->execute();

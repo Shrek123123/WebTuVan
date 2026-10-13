@@ -62,7 +62,7 @@ if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
     $respond(['success'=>false,'message'=>'Máy chủ không thể lưu file CV. Vui lòng thử lại.'], 500);
 }
 
-$checkStmt = $conn->prepare("SELECT id FROM jobseeker_profile WHERE jobseeker_id=?");
+$checkStmt = $conn->prepare("SELECT id FROM ho_so_khach_hang WHERE jobseeker_id=?");
 if (!$checkStmt) {
     @unlink($targetPath);
     $respond(['success'=>false,'message'=>'Không thể kiểm tra hồ sơ ứng viên trên máy chủ.'], 500);
@@ -74,12 +74,12 @@ $profileExists = $checkStmt->num_rows > 0;
 $checkStmt->close();
 
 if ($profileExists) {
-    $stmt = $conn->prepare("UPDATE jobseeker_profile SET cv_file=?, updated_at=NOW() WHERE jobseeker_id=?");
+    $stmt = $conn->prepare("UPDATE ho_so_khach_hang SET cv_file=?, updated_at=NOW() WHERE jobseeker_id=?");
     if ($stmt) {
         $stmt->bind_param("si", $targetPath, $jobseeker_id);
     }
 } else {
-    $stmt = $conn->prepare("INSERT INTO jobseeker_profile(jobseeker_id,cv_file) VALUES(?,?)");
+    $stmt = $conn->prepare("INSERT INTO ho_so_khach_hang(jobseeker_id,cv_file) VALUES(?,?)");
     if ($stmt) {
         $stmt->bind_param("is", $jobseeker_id, $targetPath);
     }

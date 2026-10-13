@@ -57,7 +57,7 @@ $normalize_profile_pic = function ($path) {
 };
 
 if ($employer_id > 0) {
-    $profile_stmt = $conn->prepare("SELECT profile_pic FROM employer_profile WHERE employer_id = ? LIMIT 1");
+    $profile_stmt = $conn->prepare("SELECT profile_pic FROM ho_so_hoa_giai_vien WHERE employer_id = ? LIMIT 1");
     if ($profile_stmt) {
         $profile_stmt->bind_param('i', $employer_id);
         $profile_stmt->execute();
@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_pic']) && !e
 
             if (move_uploaded_file($tmp_name, $target_path)) {
                 $db_path = 'uploads/employerprofilepic/' . $new_name;
-                $find_stmt = $conn->prepare("SELECT id FROM employer_profile WHERE employer_id = ? LIMIT 1");
+                $find_stmt = $conn->prepare("SELECT id FROM ho_so_hoa_giai_vien WHERE employer_id = ? LIMIT 1");
                 $exists = false;
 
                 if ($find_stmt) {
@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_pic']) && !e
                 }
 
                 if ($exists) {
-                    $update_stmt = $conn->prepare("UPDATE employer_profile SET profile_pic = ? WHERE employer_id = ?");
+                    $update_stmt = $conn->prepare("UPDATE ho_so_hoa_giai_vien SET profile_pic = ? WHERE employer_id = ?");
                     if ($update_stmt) {
                         $update_stmt->bind_param('si', $db_path, $employer_id);
                         if ($update_stmt->execute()) {
@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_pic']) && !e
                         $update_stmt->close();
                     }
                 } else {
-                    $insert_stmt = $conn->prepare("INSERT INTO employer_profile (employer_id, profile_pic) VALUES (?, ?)");
+                    $insert_stmt = $conn->prepare("INSERT INTO ho_so_hoa_giai_vien (employer_id, profile_pic) VALUES (?, ?)");
                     if ($insert_stmt) {
                         $insert_stmt->bind_param('is', $employer_id, $db_path);
                         if ($insert_stmt->execute()) {
@@ -917,7 +917,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_pic']) && !e
                 $total_applications = 0;
                 $employerid = $_SESSION['employerid'] ?? 0;
                 if ($employerid > 0 && isset($conn) && $conn->ping()) {
-                    $sql_total = "SELECT COUNT(a.id) AS total FROM application a JOIN job j ON a.job_id = j.id WHERE j.posted_by_employer_id = ? AND (a.hidden_from_employer = 0 OR a.hidden_from_employer IS NULL)";
+                    $sql_total = "SELECT COUNT(a.id) AS total FROM application a JOIN hoa_giai_vien j ON a.job_id = j.id WHERE j.posted_by_employer_id = ? AND (a.hidden_from_employer = 0 OR a.hidden_from_employer IS NULL)";
                     $stmt_total = $conn->prepare($sql_total);
                     $stmt_total->bind_param("i", $employerid);
                     $stmt_total->execute();
@@ -936,7 +936,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_pic']) && !e
                 $applications = [];
                 $employerid = $_SESSION['employerid'] ?? 0;
                 if ($employerid > 0 && isset($conn) && $conn->ping()) {
-                    $sql_app = "SELECT a.fullname, a.status, j.job_title FROM application a JOIN job j ON a.job_id = j.id WHERE j.posted_by_employer_id = ? AND (a.hidden_from_employer = 0 OR a.hidden_from_employer IS NULL) ORDER BY a.id DESC LIMIT 2";
+                    $sql_app = "SELECT a.fullname, a.status, j.job_title FROM application a JOIN hoa_giai_vien j ON a.job_id = j.id WHERE j.posted_by_employer_id = ? AND (a.hidden_from_employer = 0 OR a.hidden_from_employer IS NULL) ORDER BY a.id DESC LIMIT 2";
                     $stmt_app = $conn->prepare($sql_app);
                     $stmt_app->bind_param("i", $employerid);
                     $stmt_app->execute();
