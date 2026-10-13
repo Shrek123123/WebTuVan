@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <radialGradient id="bg" cx="35%" cy="25%" r="80%">
+      <stop offset="0%" stop-color="#c9284d"/>
+      <stop offset="55%" stop-color="#b9183d"/>
+      <stop offset="100%" stop-color="#970d2d"/>
+    </radialGradient>
+    <linearGradient id="shine" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.20"/>
+      <stop offset="55%" stop-color="#ffffff" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8d0928"/>
+      <stop offset="100%" stop-color="#69051f"/>
+    </linearGradient>
+    <clipPath id="clip"><circle cx="250" cy="250" r="228"/></clipPath>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.8"/>
+    </filter>
+  </defs>
+
+  <!-- Transparent background: the gray checkerboard from the source image is removed. -->
+  <circle cx="250" cy="250" r="228" fill="url(#bg)" stroke="url(#edge)" stroke-width="9"/>
+
+  <!-- Glossy highlight -->
+  <g clip-path="url(#clip)">
+    <ellipse cx="210" cy="145" rx="235" ry="105" transform="rotate(-18 210 145)" fill="url(#shine)"/>
+    <path d="M35 260 C125 285 245 286 365 252 C420 237 460 211 500 180 L500 260 C420 314 316 337 200 334 C130 332 73 315 35 295 Z" fill="#ffffff" opacity="0.035"/>
+  </g>
+
+  <!-- Subtle letter shadow -->
+  <g transform="translate(2 3)" opacity="0.18" filter="url(#softShadow)" fill="#65051d">
+    <path d="M 88.0,163.0 163.0,334.0 173.0,336.0 201.0,335.0 213.0,312.0 280.0,163.0 235.0,163.0 184.0,280.0 181.0,278.0 132.0,163.0 Z"/>
+    <path d="M 400.0,169.0 389.0,163.0 369.0,164.0 368.0,268.0 356.0,256.0 295.0,178.0 291.0,176.0 242.0,285.0 243.0,335.0 280.0,336.0 282.0,334.0 283.0,229.0 306.0,254.0 348.0,308.0 369.0,332.0 378.0,336.0 390.0,336.0 403.0,330.0 409.0,319.0 410.0,207.0 409.0,182.0 Z"/>
+  </g>
+
+  <!-- VN mark traced from the supplied image -->
+  <g fill="#ffffff">
+    <path d="M 88.0,163.0 163.0,334.0 173.0,336.0 201.0,335.0 213.0,312.0 280.0,163.0 235.0,163.0 184.0,280.0 181.0,278.0 132.0,163.0 Z"/>
+    <path d="M 400.0,169.0 389.0,163.0 369.0,164.0 368.0,268.0 356.0,256.0 295.0,178.0 291.0,176.0 242.0,285.0 243.0,335.0 280.0,336.0 282.0,334.0 283.0,229.0 306.0,254.0 348.0,308.0 369.0,332.0 378.0,336.0 390.0,336.0 403.0,330.0 409.0,319.0 410.0,207.0 409.0,182.0 Z"/>
+  </g>
+</svg>
