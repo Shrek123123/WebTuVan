@@ -451,7 +451,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label for="current_password"><?= htmlspecialchars($lang['current_password_label']) ?></label>
                         <div class="password-toggle-wrapper">
                             <input id="current_password" name="current_password" type="password" required>
-                            <button type="button" class="toggle-password" data-target="current_password" aria-label="Toggle password visibility" aria-pressed="false">👁</button>
+                            <button type="button" class="toggle-password" data-target="current_password" aria-label="Show password" aria-pressed="false"><span class="password-eye-icon" aria-hidden="true"></span></button>
                         </div>
                     </div>
 
@@ -459,7 +459,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label for="new_password"><?= htmlspecialchars($lang['new_password_label']) ?></label>
                         <div class="password-toggle-wrapper">
                             <input id="new_password" name="new_password" type="password" required>
-                            <button type="button" class="toggle-password" data-target="new_password" aria-label="Toggle password visibility" aria-pressed="false">👁</button>
+                            <button type="button" class="toggle-password" data-target="new_password" aria-label="Show password" aria-pressed="false"><span class="password-eye-icon" aria-hidden="true"></span></button>
                         </div>
                     </div>
 
@@ -467,7 +467,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label for="confirm_password"><?= htmlspecialchars($lang['confirm_password_label']) ?></label>
                         <div class="password-toggle-wrapper">
                             <input id="confirm_password" name="confirm_password" type="password" required>
-                            <button type="button" class="toggle-password" data-target="confirm_password" aria-label="Toggle password visibility" aria-pressed="false">👁</button>
+                            <button type="button" class="toggle-password" data-target="confirm_password" aria-label="Show password" aria-pressed="false"><span class="password-eye-icon" aria-hidden="true"></span></button>
                         </div>
                     </div>
 
@@ -522,7 +522,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 const isPassword = input.type === 'password';
                 input.type = isPassword ? 'text' : 'password';
-                this.textContent = isPassword ? '🙈' : '👁';
                 this.setAttribute('aria-pressed', isPassword ? 'true' : 'false');
                 this.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
             });

@@ -86,11 +86,13 @@
         function closeSidebar() {
             sidebar.classList.remove('active');
             overlay.classList.remove('active');
+            toggle.setAttribute('aria-expanded', 'false');
         }
 
         toggle.addEventListener('click', function () {
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
+            var isOpen = sidebar.classList.toggle('active');
+            overlay.classList.toggle('active', isOpen);
+            toggle.setAttribute('aria-expanded', String(isOpen));
         });
         overlay.addEventListener('click', closeSidebar);
         sidebar.querySelectorAll('button').forEach(function (button) {

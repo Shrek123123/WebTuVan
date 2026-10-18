@@ -247,7 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <label for="admin-password"><?= $lang['password'] ?? 'Mật khẩu' ?></label>
                     <div class="password-wrapper">
                         <input id="admin-password" type="password" placeholder="<?= $lang['password'] ?? 'Mật khẩu' ?>" name="password" required>
-                        <button type="button" class="toggle-password" aria-label="Show password" aria-pressed="false">👁</button>
+                        <button type="button" class="toggle-password" aria-label="Show password" aria-pressed="false"><span class="password-eye-icon" aria-hidden="true"></span></button>
                     </div>
                     <div class="forgot"><a href="jobseekerforgetpassword.php">Quên mật khẩu</a></div>
                 </div>
@@ -276,7 +276,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         toggle.addEventListener('click', function () {
             const isHidden = input.type === 'password';
             input.type = isHidden ? 'text' : 'password';
-            toggle.textContent = isHidden ? '🙈' : '👁';
             toggle.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
             toggle.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
         });

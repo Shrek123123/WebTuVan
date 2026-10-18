@@ -207,11 +207,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     </style>
-    <link rel="stylesheet" href="mediato-theme.css?v=6">
+    <link rel="stylesheet" href="mediato-theme.css?v=7">
 </head>
 
 <body>
-    <?php include_once(__DIR__ . '/header_loginlogout/jobseekerlogin.php'); ?>
+    <?php include_once(__DIR__ . '/../homepage/header_loginlogout/jobseekerlogin.php'); ?>
 
     <div class="main-content">
         <div class="login-form-container">
@@ -246,7 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <input type="password" id="passwordInput" name="password"
                             placeholder="<?= $lang['jobseeker_login_password_placeholder']; ?>" required>
                         <button type="button" class="toggle-password" data-target="passwordInput"
-                            aria-label="Toggle password visibility" aria-pressed="false">👁</button>
+                            aria-label="Show password" aria-pressed="false"><span class="password-eye-icon" aria-hidden="true"></span></button>
                     </div>
                     <div class="forgot">
                         <a href="jobseekerforgetpassword.php"><?= $lang['jobseeker_login_forgot_password']; ?></a>
@@ -277,7 +277,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!input) return;
         const isHidden = input.type === 'password';
         input.type = isHidden ? 'text' : 'password';
-        btn.textContent = isHidden ? '🙈' : '👁';
         btn.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
         btn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
       });

@@ -158,8 +158,9 @@ $profilePic = 'image/defaultavatar.jpg';
 
     .logo-wrap img {
         display: block;
-        width: auto;
-        max-width: 300px;
+        width: 43px;
+        height: 43px;
+        object-fit: contain;
     }
 
     .header-nav {
@@ -426,7 +427,6 @@ $profilePic = 'image/defaultavatar.jpg';
 
     .logo-wrap { flex: 0 0 auto; }
     .logo-wrap a { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
-    .logo-wrap img { display: none; }
     .mediator-brand-mark {
         display: grid;
         width: 43px;
@@ -511,7 +511,7 @@ $profilePic = 'image/defaultavatar.jpg';
 
     @media (max-width: 768px) {
         .header { min-height: 66px; padding: 8px 14px; }
-        .logo-wrap img { display: none !important; }
+        .logo-wrap img { width: 39px; height: 39px; }
         .mediator-brand-mark { width: 39px; height: 39px; }
         .mediator-brand-name { font-size: .96rem; }
         .menu-toggle { width: 40px; height: 40px; flex: 0 0 40px; margin-right: 10px; }
@@ -558,8 +558,7 @@ $profilePic = 'image/defaultavatar.jpg';
     </button>
     <div class="logo-wrap">
         <a href="index.php">
-            <span class="mediator-brand-mark" aria-hidden="true">M</span>
-            <span class="mediator-brand-name">Mediato<small>Đồng hành hòa giải</small></span>
+            <img src="image/logo.png" alt="Mediato – Đồng hành hòa giải">
         </a>
     </div>
 

@@ -83,9 +83,9 @@ $isVerified = isset($_SESSION['jobseeker_password_reset_verified_user_id']);
             <p><?= htmlspecialchars($lang['new_password'] ?? 'Enter your new password.', ENT_QUOTES, 'UTF-8') ?></p>
             <form id="password-form">
                 <label for="new-password"><?= htmlspecialchars($lang['new_password'] ?? 'New password', ENT_QUOTES, 'UTF-8') ?></label>
-                <div class="password-wrap"><input id="new-password" name="new_password" type="password" minlength="8" autocomplete="new-password" required><button type="button" class="toggle-password" data-target="new-password" aria-label="Show password">&#128065;</button></div>
+                <div class="password-wrap"><input id="new-password" name="new_password" type="password" minlength="8" autocomplete="new-password" required><button type="button" class="toggle-password" data-target="new-password" aria-label="Show password" aria-pressed="false"><span class="password-eye-icon" aria-hidden="true"></span></button></div>
                 <label for="confirm-password"><?= htmlspecialchars($lang['confirm_password'] ?? 'Confirm password', ENT_QUOTES, 'UTF-8') ?></label>
-                <div class="password-wrap"><input id="confirm-password" name="confirm_password" type="password" minlength="8" autocomplete="new-password" required><button type="button" class="toggle-password" data-target="confirm-password" aria-label="Show password">&#128065;</button></div>
+                <div class="password-wrap"><input id="confirm-password" name="confirm_password" type="password" minlength="8" autocomplete="new-password" required><button type="button" class="toggle-password" data-target="confirm-password" aria-label="Show password" aria-pressed="false"><span class="password-eye-icon" aria-hidden="true"></span></button></div>
                 <p class="message" id="password-message" role="alert"></p>
                 <button class="primary-button" type="submit" id="reset-password"><?= htmlspecialchars($lang['reset_password'] ?? 'Reset password', ENT_QUOTES, 'UTF-8') ?></button>
             </form>
@@ -175,6 +175,7 @@ $isVerified = isset($_SESSION['jobseeker_password_reset_verified_user_id']);
                     const visible = input.type === 'text';
                     input.type = visible ? 'password' : 'text';
                     button.setAttribute('aria-label', visible ? 'Show password' : 'Hide password');
+                    button.setAttribute('aria-pressed', visible ? 'false' : 'true');
                 });
             });
         });

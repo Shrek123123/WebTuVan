@@ -205,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       display: none;
     }
   </style>
-    <link rel="stylesheet" href="mediato-theme.css?v=6">
+    <link rel="stylesheet" href="mediato-theme.css?v=7">
 </head>
 
 <body>
@@ -238,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div class="password-toggle-wrapper">
             <input type="password" placeholder="<?php echo $lang['placeholder_password']; ?>" name="password" minlength="8" required>
             <button type="button" class="toggle-password" data-target="password"
-              aria-label="Toggle password visibility" aria-pressed="false">👁</button>
+              aria-label="Show password" aria-pressed="false"><span class="password-eye-icon" aria-hidden="true"></span></button>
           </div>
         </div>
         <div class="form-group">
@@ -247,7 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="password" placeholder="<?php echo $lang['placeholder_reenter_password']; ?>" name="retypepass"
               minlength="8" required>
             <button type="button" class="toggle-password" data-target="retypepass"
-              aria-label="Toggle password visibility" aria-pressed="false">👁</button>
+              aria-label="Show password" aria-pressed="false"><span class="password-eye-icon" aria-hidden="true"></span></button>
           </div>
         </div>
         <div class="terms-container" style="align-items: center;">
@@ -302,7 +302,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!input) return;
         const isHidden = input.type === 'password';
         input.type = isHidden ? 'text' : 'password';
-        btn.textContent = isHidden ? '🙈' : '👁';
         btn.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
         btn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
       });

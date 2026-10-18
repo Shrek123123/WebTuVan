@@ -21,7 +21,7 @@ if ($action === 'search' || $action === 'results') {
     <meta name="description" content="Tra cứu hồ sơ hòa giải viên theo chuyên môn, mức phí và tình trạng hiện tại.">
     <title>Danh bạ Hòa giải viên</title>
     <link rel="icon" type="image/svg+xml" href="image/favicon.svg">
-    <link rel="stylesheet" href="mediato-theme.css?v=6">
+    <link rel="stylesheet" href="mediato-theme.css?v=7">
 </head>
 
 <body>
