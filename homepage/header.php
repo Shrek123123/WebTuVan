@@ -516,15 +516,18 @@ $profilePic = $headerPathPrefix . 'image/defaultavatar.jpg';
         .mediator-brand-mark { width: 39px; height: 39px; }
         .mediator-brand-name { font-size: .96rem; }
         .menu-toggle { width: 40px; height: 40px; flex: 0 0 40px; margin-right: 10px; }
-        .header-nav {
+        .header .header-nav {
             top: 0;
             width: min(320px, calc(100vw - 44px));
             max-width: none;
+            align-items: stretch;
+            justify-content: flex-start;
             padding: 82px 0 24px;
             border-right: 1px solid var(--mediator-line);
             background: #faf9f5;
             box-shadow: 12px 0 30px rgba(29, 48, 47, .12);
         }
+        .header-nav-links { margin-left: 0; }
         .header-nav-links a, .loggined_option .ra_trang_ntd,
         .guest-options .btn-register, .header-nav .user-info {
             padding: 15px 22px;
@@ -534,6 +537,18 @@ $profilePic = $headerPathPrefix . 'image/defaultavatar.jpg';
         .header-nav .guest-options .btn-login { display: flex; margin: 14px 18px 0; }
         .header-nav .guest-options .btn-register { display: flex; margin: 8px 18px 0; border: 1px solid var(--mediator-line); }
         .header-nav #lang-switch-btn { width: 100%; padding: 15px 22px; border-bottom: 1px solid var(--mediator-line); text-align: left; }
+        .header-nav-links a,
+        .loggined_option .ra_trang_ntd,
+        .header-nav #lang-switch-btn {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            min-height: 52px;
+            box-sizing: border-box;
+            padding: 15px 22px;
+            text-align: left;
+        }
         .header-right .mobile-login-btn {
             padding: 9px 12px;
             border: 1px solid var(--mediator-ink);
@@ -541,6 +556,8 @@ $profilePic = $headerPathPrefix . 'image/defaultavatar.jpg';
             color: #fff;
             font-size: .82rem;
         }
+        .header-right .user-dropdown:not(.is-open) .dropdown-menu { display: none; }
+        .header-right .user-dropdown.is-open .dropdown-menu { display: flex; }
     }
 
     @media (max-width: 390px) {
@@ -646,6 +663,7 @@ $profilePic = $headerPathPrefix . 'image/defaultavatar.jpg';
         var toggle = document.getElementById('menu-toggle');
         var sidebar = document.getElementById('header-nav');
         var overlay = document.getElementById('sidebar-overlay');
+        var mobileProfileDropdown = document.querySelector('.header-right .user-dropdown');
 
         function closeMenu() {
             if (sidebar) sidebar.classList.remove('active');
@@ -666,6 +684,24 @@ $profilePic = $headerPathPrefix . 'image/defaultavatar.jpg';
             overlay.addEventListener('click', closeMenu);
             document.addEventListener('keydown', function (event) {
                 if (event.key === 'Escape') closeMenu();
+            });
+        }
+
+        if (mobileProfileDropdown) {
+            mobileProfileDropdown.addEventListener('click', function (event) {
+                if (!window.matchMedia('(max-width: 768px)').matches) return;
+                if (event.target.closest('.user-info')) {
+                    mobileProfileDropdown.classList.toggle('is-open');
+                }
+            });
+            document.addEventListener('click', function (event) {
+                if (
+                    window.matchMedia('(max-width: 768px)').matches
+                    && mobileProfileDropdown.classList.contains('is-open')
+                    && !mobileProfileDropdown.contains(event.target)
+                ) {
+                    mobileProfileDropdown.classList.remove('is-open');
+                }
             });
         }
 
