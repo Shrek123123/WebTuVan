@@ -8,6 +8,8 @@ $filters = [
     'specialty' => mediator_request_value($_GET['specialty'] ?? ''),
     'availability' => mediator_request_value($_GET['availability'] ?? ''),
     'sort' => mediator_request_value($_GET['sort'] ?? 'rating'),
+    'province_location' => mediator_request_value($_GET['province_location'] ?? ''),
+    'district_location' => mediator_request_value($_GET['district_location'] ?? ''),
 ];
 $pageSize = 9;
 $page = max(1, (int) mediator_request_value($_GET['page'] ?? '1'));
@@ -16,7 +18,7 @@ $totalPages = max(1, (int) ceil($directory['total'] / $pageSize));
 $page = min($page, $totalPages);
 $profiles = array_slice($directory['profiles'], ($page - 1) * $pageSize, $pageSize);
 $specialtyOptions = mediator_specialty_options($conn);
-$hasSearchFilters = $filters['q'] !== '' || $filters['specialty'] !== '' || $filters['availability'] !== '';
+$hasSearchFilters = $filters['q'] !== '' || $filters['specialty'] !== '' || $filters['availability'] !== '' || $filters['province_location'] !== '' || $filters['district_location'] !== '';
 $emptyDirectoryCheck = null;
 if (!$directory['error'] && !$profiles && $hasSearchFilters) {
     $emptyDirectoryCheck = mediator_fetch_profiles($conn, ['sort' => $filters['sort']]);
@@ -62,7 +64,7 @@ function mediator_render_search_booking_card($profile)
     .mediator-search-heading h1 { margin: 10px 0 9px; font: 500 clamp(2.35rem, 4vw, 3.6rem)/1.08 Georgia, 'Times New Roman', serif; letter-spacing: -.035em; }
     .mediator-search-heading p { margin: 0; color: var(--mediator-muted); line-height: 1.65; }
     .mediator-filter-panel { margin-bottom: 30px; padding: 18px; border: 1px solid var(--mediator-line); background: #fffefa; box-shadow: 0 10px 28px rgba(34, 46, 45, .045); }
-    .mediator-search-form { display: grid; grid-template-columns: minmax(200px, 1.5fr) repeat(3, minmax(140px, .8fr)) auto; gap: 10px; align-items: end; }
+    .mediator-search-form { display: grid; grid-template-columns: minmax(160px, 1.4fr) repeat(5, minmax(100px, .8fr)) auto; gap: 10px; align-items: end; }
     .mediator-filter-panel .mediator-field label { display: block; margin-bottom: 7px; color: var(--mediator-muted); font-size: .75rem; font-weight: 700; }
     .mediator-filter-panel .mediator-field input, .mediator-filter-panel .mediator-field select { width: 100%; min-height: 45px; padding: 9px 11px; border: 1px solid #d8ddd7; border-radius: 2px; background: #fff; color: var(--mediator-ink); font: inherit; }
     .mediator-filter-panel .mediator-field input:focus, .mediator-filter-panel .mediator-field select:focus { outline: 3px solid rgba(42, 111, 101, .17); border-color: var(--mediator-teal); }
@@ -190,7 +192,7 @@ function mediator_render_search_booking_card($profile)
         </section>
 
         <section class="mediator-filter-panel" aria-label="Bộ lọc danh bạ">
-            <form class="mediator-search-form" method="get" action="searchpage.php">
+            <form class="mediator-search-form" method="get" action="searchpage.php" data-location-source="<?= mediator_escape(mediator_application_url('app/data/vietnam-locations.json')) ?>">
                 <div class="mediator-field">
                     <label for="mediator-search-q">Từ khóa</label>
                     <input id="mediator-search-q" type="search" name="q" value="<?= mediator_escape($filters['q']) ?>" placeholder="Nhập từ khóa cần tìm">
@@ -204,6 +206,7 @@ function mediator_render_search_booking_card($profile)
                         <?php endforeach; ?>
                     </select>
                 </div>
+                <?= mediator_location_select_fields('mediator-search-location', $filters['province_location'], $filters['district_location']) ?>
                 <div class="mediator-field">
                     <label for="mediator-search-availability">Tình trạng</label>
                     <?= mediator_availability_select('mediator-search-availability', $filters['availability']) ?>
@@ -214,7 +217,9 @@ function mediator_render_search_booking_card($profile)
                 </div>
                 <button class="mediator-submit" type="submit">Lọc danh bạ</button>
             </form>
+            <span class="mediator-location-status" role="status" aria-live="polite"></span>
         </section>
+        <script src="<?= mediator_escape(mediator_application_url('app/views/mediators/location-filter.js')) ?>" defer></script>
 
         <div class="mediator-listing-meta">
             <span><strong><?= number_format($directory['total'], 0, ',', '.') ?></strong> hồ sơ phù hợp</span>

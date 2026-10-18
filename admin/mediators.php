@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../app/views/mediators/location-data.php';
 
 if (empty($_SESSION['admin_id']) || empty($_SESSION['usernameadmin'])) {
     header('Location: adminlogin.php');
@@ -65,6 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $university = trim((string) ($_POST['university'] ?? ''));
     $major = trim((string) ($_POST['major'] ?? ''));
     $bio = trim((string) ($_POST['bio'] ?? ''));
+    $provinceLocation = mediator_request_value($_POST['province_location'] ?? '');
+    $districtLocation = mediator_request_value($_POST['district_location'] ?? '');
     $specialtyInput = (string) ($_POST['specialties'] ?? '');
     $rateInput = $_POST['hourly_rate'] ?? '';
     $status = (string) ($_POST['status'] ?? '');
@@ -75,7 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($mediatorId === false || $fullName === '' || strlen($fullName) > 100
         || $phone === '' || strlen($phone) > 20 || strlen($university) > 100 || strlen($major) > 100
         || strlen($bio) > 60000 || strlen($specialtyInput) > 2000
-        || $hourlyRate < 0 || $hourlyRate > 99999999.99 || !in_array($status, $validStatuses, true)) {
+        || $hourlyRate < 0 || $hourlyRate > 99999999.99 || !in_array($status, $validStatuses, true)
+        || !mediator_location_pair_is_valid($provinceLocation, $districtLocation)) {
         mediator_admin_redirect_with_error('Thông tin hồ sơ chưa hợp lệ; vui lòng kiểm tra các trường bắt buộc và giới hạn độ dài.', (int) ($mediatorId ?: 0));
     }
 
@@ -143,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare(
             'UPDATE mediators
              SET full_name = ?, avatar_url = ?, phone = ?, university = ?, major = ?, bio = ?,
-                 specialties = ?, hourly_rate = ?, status = ?
+                 province_location = ?, district_location = ?, specialties = ?, hourly_rate = ?, status = ?
              WHERE id = ?'
         );
         if (!$stmt) {
@@ -153,11 +157,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new RuntimeException('Could not prepare mediator profile update: ' . $conn->error);
         }
         $id = (int) $mediatorId;
-        $stmt->bind_param('sssssssdsi', $fullName, $avatar, $phone, $university, $major, $bio, $specialtiesJson, $hourlyRate, $status, $id);
+        $stmt->bind_param('sssssssssdsi', $fullName, $avatar, $phone, $university, $major, $bio, $provinceLocation, $districtLocation, $specialtiesJson, $hourlyRate, $status, $id);
     } else {
         $stmt = $conn->prepare(
-            'INSERT INTO mediators (full_name, avatar_url, phone, university, major, bio, specialties, hourly_rate, status)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            'INSERT INTO mediators (full_name, avatar_url, phone, university, major, bio, province_location, district_location, specialties, hourly_rate, status)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
         );
         if (!$stmt) {
             if ($newAvatarPath !== null) {
@@ -165,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             throw new RuntimeException('Could not prepare mediator profile creation: ' . $conn->error);
         }
-        $stmt->bind_param('sssssssds', $fullName, $avatar, $phone, $university, $major, $bio, $specialtiesJson, $hourlyRate, $status);
+        $stmt->bind_param('sssssssssds', $fullName, $avatar, $phone, $university, $major, $bio, $provinceLocation, $districtLocation, $specialtiesJson, $hourlyRate, $status);
     }
 
     try {
@@ -192,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $editId = filter_input(INPUT_GET, 'edit', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 $editProfile = null;
 if ($editId) {
-    $editStmt = $conn->prepare('SELECT id, full_name, avatar_url, phone, university, major, bio, specialties, hourly_rate, status FROM mediators WHERE id = ? LIMIT 1');
+    $editStmt = $conn->prepare('SELECT id, full_name, avatar_url, phone, university, major, bio, province_location, district_location, specialties, hourly_rate, status FROM mediators WHERE id = ? LIMIT 1');
     if (!$editStmt) {
         throw new RuntimeException('Could not prepare mediator profile lookup: ' . $conn->error);
     }
@@ -234,6 +238,7 @@ if ($editProfile) {
         .intro { color: #647571; }
         .panel { margin-top: 22px; padding: 24px; border: 1px solid #dce4df; background: #fffefa; }
         .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+        .location-filter-fields { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
         label { display: grid; gap: 6px; font-weight: 700; }
         input, select, textarea { width: 100%; min-height: 42px; padding: 10px; border: 1px solid #cdd9d3; border-radius: 3px; font: inherit; }
         textarea { min-height: 110px; resize: vertical; }
@@ -248,7 +253,7 @@ if ($editProfile) {
         .avatar-help { margin: 4px 0 0; color: #647571; font-size: .88rem; font-weight: 400; }
         .remove-avatar { display: flex; grid-template-columns: auto 1fr; align-items: center; justify-content: start; gap: 9px; margin-top: 10px; font-weight: 400; }
         .remove-avatar input { width: auto; min-height: unset; }
-        @media (max-width: 650px) { .form-grid { grid-template-columns: 1fr; } .wide { grid-column: auto; } }
+        @media (max-width: 650px) { .form-grid { grid-template-columns: 1fr; } .wide, .location-filter-fields { grid-column: auto; } .location-filter-fields { grid-template-columns: 1fr; } }
     </style>
     <link rel="stylesheet" href="../mediato-theme.css?v=6">
 </head>
@@ -267,7 +272,7 @@ if ($editProfile) {
         <?php endif; ?>
         <section class="panel">
             <h2><?= $editProfile ? 'Cập nhật hồ sơ' : 'Thêm hồ sơ đối tác' ?></h2>
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data" data-location-source="<?= htmlspecialchars(mediator_application_url('app/data/vietnam-locations.json'), ENT_QUOTES, 'UTF-8') ?>">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['mediator_admin_csrf'], ENT_QUOTES, 'UTF-8') ?>">
                 <input type="hidden" name="id" value="<?= (int) ($editProfile['id'] ?? 0) ?>">
                 <input type="hidden" name="MAX_FILE_SIZE" value="5242880">
@@ -284,6 +289,9 @@ if ($editProfile) {
                             <?php endforeach; ?>
                         </select>
                     </label>
+                    <div class="location-filter-fields">
+                        <?= mediator_location_select_fields('mediator-admin-location', $editProfile['province_location'] ?? '', $editProfile['district_location'] ?? '') ?>
+                    </div>
                     <div class="wide">
                         <label for="avatar-file">Ảnh đại diện</label>
                         <?php if (!empty($editProfile['avatar_url'])): ?>
@@ -296,6 +304,7 @@ if ($editProfile) {
                     <label class="wide">Lĩnh vực chuyên môn (phân tách bằng dấu phẩy)<input name="specialties" maxlength="2000" value="<?= htmlspecialchars(implode(', ', $editingSpecialties), ENT_QUOTES, 'UTF-8') ?>"></label>
                     <label class="wide">Giới thiệu<textarea name="bio" maxlength="60000"><?= htmlspecialchars((string) ($editProfile['bio'] ?? ''), ENT_QUOTES, 'UTF-8') ?></textarea></label>
                 </div>
+                <p class="mediator-location-status" role="status" aria-live="polite"></p>
                 <button type="submit"><?= $editProfile ? 'Lưu thay đổi' : 'Thêm vào danh bạ' ?></button>
                 <?php if ($editProfile): ?><a href="mediators.php">Hủy chỉnh sửa</a><?php endif; ?>
             </form>
@@ -327,5 +336,6 @@ if ($editProfile) {
             <?php endif; ?>
         </section>
     </main>
+    <script src="<?= htmlspecialchars(mediator_application_url('app/views/mediators/location-filter.js'), ENT_QUOTES, 'UTF-8') ?>" defer></script>
 </body>
 </html>

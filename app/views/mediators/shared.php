@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/location-data.php';
+
 if (!function_exists('mediator_escape')) {
     function mediator_escape($value)
     {
@@ -35,11 +37,6 @@ if (!function_exists('mediator_escape')) {
         return function_exists('mb_strtolower') ? mb_strtolower($value, 'UTF-8') : strtolower($value);
     }
 
-    function mediator_request_value($value)
-    {
-        return is_string($value) || is_int($value) || is_float($value) ? trim((string) $value) : '';
-    }
-
     function mediator_bind_values($stmt, $types, &$values)
     {
         $arguments = [$types];
@@ -70,6 +67,14 @@ if (!function_exists('mediator_escape')) {
         $query = trim((string) ($filters['q'] ?? ''));
         $specialty = trim((string) ($filters['specialty'] ?? ''));
         $availability = (string) ($filters['availability'] ?? '');
+        $locationPairValid = mediator_location_pair_is_valid(
+            $filters['province_location'] ?? '',
+            $filters['district_location'] ?? ''
+        );
+        [$provinceLocation, $districtLocation] = mediator_normalize_location_pair(
+            $filters['province_location'] ?? '',
+            $filters['district_location'] ?? ''
+        );
         if (!in_array($availability, ['online', 'busy', 'offline'], true)) {
             $availability = '';
         }
@@ -83,6 +88,9 @@ if (!function_exists('mediator_escape')) {
 
         $conditions = [];
         $params = [];
+        if (!$locationPairValid) {
+            $conditions[] = '1 = 0';
+        }
         if ($query !== '') {
             $term = mediator_like_pattern($query);
             $conditions[] = "(full_name LIKE ? ESCAPE '!' OR university LIKE ? ESCAPE '!' OR major LIKE ? ESCAPE '!' OR bio LIKE ? ESCAPE '!' OR CAST(specialties AS CHAR) LIKE ? ESCAPE '!')";
@@ -96,8 +104,16 @@ if (!function_exists('mediator_escape')) {
             $conditions[] = 'status = ?';
             $params[] = $availability;
         }
+        if ($provinceLocation !== '') {
+            $conditions[] = 'province_location = ?';
+            $params[] = $provinceLocation;
+        }
+        if ($districtLocation !== '') {
+            $conditions[] = 'district_location = ?';
+            $params[] = $districtLocation;
+        }
 
-        $sql = 'SELECT id, full_name, avatar_url, university, major, bio, specialties, hourly_rate, rating, total_cases, status
+        $sql = 'SELECT id, full_name, avatar_url, university, major, bio, specialties, hourly_rate, rating, total_cases, status, province_location, district_location
                 FROM mediators';
         if ($conditions) {
             $sql .= ' WHERE ' . implode(' AND ', $conditions);

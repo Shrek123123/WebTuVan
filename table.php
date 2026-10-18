@@ -175,6 +175,8 @@ $bookingSchema = [
         avatar_url VARCHAR(255),
         phone VARCHAR(20) NOT NULL,
         location VARCHAR(255),
+        province_location VARCHAR(100),
+        district_location VARCHAR(100),
         university VARCHAR(100),
         major VARCHAR(100),
         bio TEXT,
@@ -186,7 +188,8 @@ $bookingSchema = [
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
-        INDEX idx_mediators_status_rating (status, rating)
+        INDEX idx_mediators_status_rating (status, rating),
+        INDEX idx_mediators_location (province_location, district_location)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
     'bookings' => "CREATE TABLE IF NOT EXISTS bookings (
         id INT PRIMARY KEY AUTO_INCREMENT,
@@ -241,6 +244,29 @@ foreach ($bookingSchema as $tableName => $createTableSql) {
     if ($conn->query($createTableSql) !== true) {
         throw new RuntimeException("Could not create {$tableName}: " . $conn->error);
     }
+}
+
+$mediatorColumnsResult = $conn->query("SHOW COLUMNS FROM `mediators`");
+if (!$mediatorColumnsResult) {
+    throw new RuntimeException('Could not inspect mediator location columns: ' . $conn->error);
+}
+$mediatorColumns = [];
+while ($column = $mediatorColumnsResult->fetch_assoc()) {
+    $mediatorColumns[] = $column['Field'];
+}
+foreach (['province_location', 'district_location'] as $locationColumn) {
+    if (!in_array($locationColumn, $mediatorColumns, true)
+        && $conn->query("ALTER TABLE `mediators` ADD COLUMN `{$locationColumn}` VARCHAR(100) NULL") !== true) {
+        throw new RuntimeException("Could not add mediators.{$locationColumn}: " . $conn->error);
+    }
+}
+$locationIndex = $conn->query("SHOW INDEX FROM `mediators` WHERE Key_name = 'idx_mediators_location'");
+if (!$locationIndex) {
+    throw new RuntimeException('Could not inspect mediator location index: ' . $conn->error);
+}
+if ($locationIndex->num_rows === 0
+    && $conn->query('ALTER TABLE `mediators` ADD INDEX idx_mediators_location (province_location, district_location)') !== true) {
+    throw new RuntimeException('Could not add mediator location index: ' . $conn->error);
 }
 
 $existingUsers = $conn->query("SELECT 1 FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'user'");

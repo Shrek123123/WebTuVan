@@ -8,8 +8,10 @@ $filters = [
     'specialty' => mediator_request_value($_GET['specialty'] ?? ''),
     'availability' => mediator_request_value($_GET['availability'] ?? ''),
     'sort' => mediator_request_value($_GET['sort'] ?? 'rating'),
+    'province_location' => mediator_request_value($_GET['province_location'] ?? ''),
+    'district_location' => mediator_request_value($_GET['district_location'] ?? ''),
 ];
-$hasHomeFilters = $filters['q'] !== '' || $filters['specialty'] !== '' || $filters['availability'] !== '';
+$hasHomeFilters = $filters['q'] !== '' || $filters['specialty'] !== '' || $filters['availability'] !== '' || $filters['province_location'] !== '' || $filters['district_location'] !== '';
 $pageSize = 6;
 $directory = mediator_fetch_profiles($conn, $filters);
 $profileCount = $directory['total'];
@@ -63,7 +65,7 @@ function mediator_render_home_booking_card($profile)
     .mediator-note { border-left: 2px solid var(--mediator-terracotta); padding: 5px 0 5px 18px; color: var(--mediator-muted); font-size: .94rem; line-height: 1.65; }
     .mediator-note strong { display: block; margin-bottom: 6px; color: var(--mediator-ink); font-family: Georgia, 'Times New Roman', serif; font-size: 1.2rem; }
     .mediator-search-panel { padding: 20px; border: 1px solid var(--mediator-line); background: #fffefa; box-shadow: 0 12px 32px rgba(34, 46, 45, .055); }
-    .mediator-form { display: grid; grid-template-columns: minmax(200px, 1.65fr) repeat(3, minmax(140px, .8fr)) auto; gap: 10px; align-items: end; }
+    .mediator-form { display: grid; grid-template-columns: minmax(160px, 1.4fr) repeat(5, minmax(100px, .8fr)) auto; gap: 10px; align-items: end; }
     .mediator-field label { display: block; margin: 0 0 7px; color: var(--mediator-muted); font-size: .75rem; font-weight: 700; }
     .mediator-field input, .mediator-field select { width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid #d8ddd7; border-radius: 2px; background: #fff; color: var(--mediator-ink); font: inherit; }
     .mediator-field input:focus, .mediator-field select:focus { outline: 3px solid rgba(42, 111, 101, .17); border-color: var(--mediator-teal); }
@@ -224,7 +226,7 @@ function mediator_render_home_booking_card($profile)
         </section>
 
         <section class="mediator-search-panel" aria-label="Tìm kiếm hòa giải viên">
-            <form class="mediator-form" method="get" action="searchpage.php">
+            <form class="mediator-form" method="get" action="searchpage.php" data-location-source="<?= mediator_escape(mediator_application_url('app/data/vietnam-locations.json')) ?>">
                 <div class="mediator-field">
                     <label for="mediator-home-q">Từ khóa</label>
                     <input id="mediator-home-q" type="search" name="q" value="<?= mediator_escape($filters['q']) ?>" placeholder="Tên, trường, chuyên môn…">
@@ -238,6 +240,7 @@ function mediator_render_home_booking_card($profile)
                         <?php endforeach; ?>
                     </select>
                 </div>
+                <?= mediator_location_select_fields('mediator-home-location', $filters['province_location'], $filters['district_location']) ?>
                 <div class="mediator-field">
                     <label for="mediator-home-availability">Tình trạng</label>
                     <?= mediator_availability_select('mediator-home-availability', $filters['availability']) ?>
@@ -248,7 +251,9 @@ function mediator_render_home_booking_card($profile)
                 </div>
                 <button class="mediator-submit" type="submit">Tìm hồ sơ</button>
             </form>
+            <span class="mediator-location-status" role="status" aria-live="polite"></span>
         </section>
+        <script src="<?= mediator_escape(mediator_application_url('app/views/mediators/location-filter.js')) ?>" defer></script>
 
         <section id="mediator-directory" aria-labelledby="mediator-home-results">
             <div class="mediator-section-heading">

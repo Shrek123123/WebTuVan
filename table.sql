@@ -33,6 +33,8 @@ CREATE TABLE IF NOT EXISTS mediators (
     full_name VARCHAR(100) NOT NULL,
     avatar_url VARCHAR(255),
     phone VARCHAR(20) NOT NULL,
+    province_location VARCHAR(100),
+    district_location VARCHAR(100),
     university VARCHAR(100),
     major VARCHAR(100),
     bio TEXT,
@@ -44,7 +46,8 @@ CREATE TABLE IF NOT EXISTS mediators (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
-    INDEX idx_mediators_status_rating (status, rating)
+    INDEX idx_mediators_status_rating (status, rating),
+    INDEX idx_mediators_location (province_location, district_location)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS bookings (
