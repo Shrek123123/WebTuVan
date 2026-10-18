@@ -58,6 +58,28 @@ a:not(.btn-danger):not(.danger):not([class*="delete"]):not([class*="reject"]):ho
     color: #4D347F !important;
 }
 
+.header .ra_trang_ntd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    margin-right: 0;
+    padding: 0 12px;
+    color: #4D347F !important;
+    text-decoration: none !important;
+    white-space: nowrap;
+}
+
+.header .ra_trang_ntd:hover {
+    border-color: #DDD4EA !important;
+    background-color: #F0EBF8 !important;
+    color: #4D347F !important;
+}
+
+.header .user-dropdown {
+    margin-right: 0;
+}
+
 a.btn-login,
 a.mediator-primary-action,
 a.mediator-card-link,
@@ -120,7 +142,7 @@ a.link-button:not(.secondary):hover {
     color: #fff !important;
 }
 
-button:not(.btn-danger):not(.danger):not(.error):not(.warning):not(.success):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-cancel):not(.cancel):not(.secondary):not(.btn-secondary):not(.menu-toggle):not(.toggle-password):not([class*="delete"]):not([class*="reject"]),
+button:not(.btn-danger):not(.danger):not(.error):not(.warning):not(.success):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-cancel):not(.cancel):not(.secondary):not(.btn-secondary):not(.menu-toggle):not(.profile-sidebar-toggle):not(.dashboard-sidebar-toggle):not(.admin-mobile-menu-toggle):not(.toggle-password):not(.password-toggle):not(.eye):not([class*="delete"]):not([class*="reject"]),
 input[type="submit"]:not(.btn-danger):not(.danger):not(.error):not(.warning):not(.success):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-cancel):not(.cancel):not(.secondary):not(.btn-secondary):not([class*="delete"]):not([class*="reject"]),
 input[type="button"]:not(.btn-danger):not(.danger):not(.error):not(.warning):not(.success):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-cancel):not(.cancel):not(.secondary):not(.btn-secondary):not([class*="delete"]):not([class*="reject"]),
 .btn-primary,
@@ -131,7 +153,7 @@ input[type="button"]:not(.btn-danger):not(.danger):not(.error):not(.warning):not
     color: #fff !important;
 }
 
-button:hover:not(:disabled):not(.btn-danger):not(.danger):not(.error):not(.warning):not(.success):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-cancel):not(.cancel):not(.secondary):not(.btn-secondary):not(.menu-toggle):not(.toggle-password):not([class*="delete"]):not([class*="reject"]),
+button:hover:not(:disabled):not(.btn-danger):not(.danger):not(.error):not(.warning):not(.success):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-cancel):not(.cancel):not(.secondary):not(.btn-secondary):not(.menu-toggle):not(.profile-sidebar-toggle):not(.dashboard-sidebar-toggle):not(.admin-mobile-menu-toggle):not(.toggle-password):not(.password-toggle):not(.eye):not([class*="delete"]):not([class*="reject"]),
 input[type="submit"]:hover:not(:disabled):not(.btn-danger):not(.danger):not(.error):not(.warning):not(.success):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-cancel):not(.cancel):not(.secondary):not(.btn-secondary):not([class*="delete"]):not([class*="reject"]),
 input[type="button"]:hover:not(:disabled):not(.btn-danger):not(.danger):not(.error):not(.warning):not(.success):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-cancel):not(.cancel):not(.secondary):not(.btn-secondary):not([class*="delete"]):not([class*="reject"]),
 .btn-primary:hover,
@@ -146,13 +168,13 @@ button:is(.menu-toggle, .profile-sidebar-toggle, .dashboard-sidebar-toggle, .adm
     background: transparent !important;
     background-color: transparent !important;
     background-image: none !important;
-    border-color: transparent !important;
     box-shadow: none !important;
 }
 
 button:is(.menu-toggle, .profile-sidebar-toggle, .dashboard-sidebar-toggle, .admin-mobile-menu-toggle, .toggle-password, .password-toggle, .eye):focus-visible {
     outline: 3px solid #2F7068 !important;
     outline-offset: 2px;
+    border-color: #2F7068 !important;
 }
 
 .admin-mobile-menu-toggle {
@@ -364,7 +386,8 @@ tbody td {
 }
 
 .header .auth-switch:hover,
-.header a:hover {
+.header a.btn-login:hover,
+.header a.btn-register:hover {
     border-color: #4D347F !important;
     background-color: #4D347F !important;
     color: #fff !important;

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../config.php';
+$headerPathPrefix = $headerPathPrefix ?? '';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -16,7 +17,7 @@ $jobseeker_id = (int) ($_SESSION['customer_id'] ?? $_SESSION['jobseeker_id'] ?? 
 $isCustomer = in_array($_SESSION['role'] ?? '', ['customer', 'jobseeker'], true);
 $user_data = $isCustomer ? (string) ($_SESSION['username'] ?? '') : null;
 $username = $user_data;
-$profilePic = 'image/defaultavatar.jpg';
+$profilePic = $headerPathPrefix . 'image/defaultavatar.jpg';
 ?>
 <style>
     .loggined_option {
@@ -557,17 +558,17 @@ $profilePic = 'image/defaultavatar.jpg';
         <span></span>
     </button>
     <div class="logo-wrap">
-        <a href="index.php">
-            <img src="image/logo.png" alt="Mediato – Đồng hành hòa giải">
+        <a href="<?= htmlspecialchars($headerPathPrefix . 'index.php', ENT_QUOTES, 'UTF-8') ?>">
+            <img src="<?= htmlspecialchars($headerPathPrefix . 'image/logo.png', ENT_QUOTES, 'UTF-8') ?>" alt="Mediato – Đồng hành hòa giải">
         </a>
     </div>
 
     <nav class="header-nav" id="header-nav" aria-label="Điều hướng chính">
         <div class="header-nav-links">
-            <a href="index.php">
+            <a href="<?= htmlspecialchars($headerPathPrefix . 'index.php', ENT_QUOTES, 'UTF-8') ?>">
                 Trang chủ
             </a>
-            <a href="searchpage.php">
+            <a href="<?= htmlspecialchars($headerPathPrefix . 'searchpage.php', ENT_QUOTES, 'UTF-8') ?>">
                 Tìm hòa giải viên
             </a>
             <!-- <a href="contactus_jobseeker.php" style="text-decoration: none; color: #333;">
@@ -577,30 +578,30 @@ $profilePic = 'image/defaultavatar.jpg';
 
         <div class="loggined_option">
         <?php if ($isCustomer): ?>
-            <a class="ra_trang_ntd" href="jobseekerprofile/bookings.php">Lịch tư vấn</a>
+            <a class="ra_trang_ntd" href="<?= htmlspecialchars($headerPathPrefix . 'jobseekerprofile/bookings.php', ENT_QUOTES, 'UTF-8') ?>">Lịch tư vấn</a>
             <div class="user-dropdown">
                 <div class="user-info">
                     <img src="<?= htmlspecialchars($profilePic); ?>" alt="User Avatar">
                     <span><?= htmlspecialchars($username ?? 'Người dùng'); ?></span>
                 </div>
                 <div class="dropdown-menu">
-                    <a href="jobseekerprofile/ho_so_ung_vien.php">
+                    <a href="<?= htmlspecialchars($headerPathPrefix . 'jobseekerprofile/ho_so_ung_vien.php', ENT_QUOTES, 'UTF-8') ?>">
                         Tài khoản
                     </a>
-                    <a href="jobseekerprofile/bookings.php">
+                    <a href="<?= htmlspecialchars($headerPathPrefix . 'jobseekerprofile/bookings.php', ENT_QUOTES, 'UTF-8') ?>">
                         Lịch tư vấn
                     </a>
-                    <a href="jobseekerlogout.php">
+                    <a href="<?= htmlspecialchars($headerPathPrefix . 'jobseekerlogout.php', ENT_QUOTES, 'UTF-8') ?>">
                         <?= $lang['logout']; ?>
                     </a>
                 </div>
             </div>
         <?php else: ?>
             <div class="guest-options">
-                <a href="jobseekerlogin.php" class="btn-login">
+                <a href="<?= htmlspecialchars($headerPathPrefix . 'jobseekerlogin.php', ENT_QUOTES, 'UTF-8') ?>" class="btn-login">
                     Đăng nhập
                 </a>
-                <a href="jobseekerregister.php" class="btn-register">
+                <a href="<?= htmlspecialchars($headerPathPrefix . 'jobseekerregister.php', ENT_QUOTES, 'UTF-8') ?>" class="btn-register">
                     Tạo tài khoản
                 </a>
 
@@ -621,19 +622,19 @@ $profilePic = 'image/defaultavatar.jpg';
                     <span><?= htmlspecialchars($username ?? 'Người dùng'); ?></span>
                 </div>
                 <div class="dropdown-menu">
-                    <a href="jobseekerprofile/ho_so_ung_vien.php">
+                    <a href="<?= htmlspecialchars($headerPathPrefix . 'jobseekerprofile/ho_so_ung_vien.php', ENT_QUOTES, 'UTF-8') ?>">
                         Tài khoản
                     </a>
-                    <a href="jobseekerprofile/bookings.php">
+                    <a href="<?= htmlspecialchars($headerPathPrefix . 'jobseekerprofile/bookings.php', ENT_QUOTES, 'UTF-8') ?>">
                         Lịch tư vấn
                     </a>
-                    <a href="jobseekerlogout.php">
+                    <a href="<?= htmlspecialchars($headerPathPrefix . 'jobseekerlogout.php', ENT_QUOTES, 'UTF-8') ?>">
                         <?= $lang['logout']; ?>
                     </a>
                 </div>
             </div>
         <?php else: ?>
-            <a href="jobseekerlogin.php" class="btn-login mobile-login-btn">
+            <a href="<?= htmlspecialchars($headerPathPrefix . 'jobseekerlogin.php', ENT_QUOTES, 'UTF-8') ?>" class="btn-login mobile-login-btn">
                 Đăng nhập
             </a>
         <?php endif; ?>

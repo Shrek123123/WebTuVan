@@ -174,6 +174,7 @@ $bookingSchema = [
         full_name VARCHAR(100) NOT NULL,
         avatar_url VARCHAR(255),
         phone VARCHAR(20) NOT NULL,
+        location VARCHAR(255),
         university VARCHAR(100),
         major VARCHAR(100),
         bio TEXT,

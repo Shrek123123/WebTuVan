@@ -417,7 +417,13 @@ $profilePic = 'image/defaultavatar.jpg';
 
     .logo-wrap { flex: 0 0 auto; }
     .logo-wrap a { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
-    .logo-wrap img { display: none; }
+    .logo-wrap img {
+        display: block;
+        width: auto;
+        max-width: 240px;
+        max-height: 50px;
+        object-fit: contain;
+    }
     .mediator-brand-mark {
         display: grid;
         width: 43px;
@@ -502,7 +508,13 @@ $profilePic = 'image/defaultavatar.jpg';
 
     @media (max-width: 768px) {
         .header { min-height: 66px; padding: 8px 14px; }
-        .logo-wrap img { display: none !important; }
+        .logo-wrap img {
+            display: block !important;
+            width: auto !important;
+            max-width: min(220px, 52vw);
+            max-height: 44px;
+            object-fit: contain;
+        }
         .mediator-brand-mark { width: 39px; height: 39px; }
         .mediator-brand-name { font-size: .96rem; }
         .menu-toggle { width: 40px; height: 40px; flex: 0 0 40px; margin-right: 10px; }
@@ -549,8 +561,7 @@ $profilePic = 'image/defaultavatar.jpg';
     </button>
     <div class="logo-wrap">
         <a href="index.php">
-            <span class="mediator-brand-mark" aria-hidden="true">M</span>
-            <span class="mediator-brand-name">Mediato<small>Đồng hành hòa giải</small></span>
+            <img src="image/logo.png" alt="Mediato – Đồng hành hòa giải">
         </a>
     </div>
 
@@ -569,7 +580,7 @@ $profilePic = 'image/defaultavatar.jpg';
 
         <div class="loggined_option">
         <?php if ($isCustomer): ?>
-            <a class="ra_trang_ntd" href="bookings.php">Lịch tư vấn</a>
+            <a class="ra_trang_ntd" href="jobseekerprofile/bookings.php">Lịch tư vấn</a>
             <div class="user-dropdown">
                 <div class="user-info">
                     <img src="<?= htmlspecialchars($profilePic); ?>" alt="User Avatar">
@@ -579,7 +590,7 @@ $profilePic = 'image/defaultavatar.jpg';
                     <?php
                     $jobseekerId = isset($_SESSION['jobseeker_id']) ? intval($_SESSION['jobseeker_id']) : 0;
                     ?>
-                    <a href="bookings.php">
+                    <a href="jobseekerprofile/bookings.php">
                         Lịch tư vấn
                     </a>
                     <a href="jobseekerlogout.php">
@@ -613,7 +624,7 @@ $profilePic = 'image/defaultavatar.jpg';
                     <span><?= htmlspecialchars($username ?? 'Người dùng'); ?></span>
                 </div>
                 <div class="dropdown-menu">
-                    <a href="bookings.php">
+                    <a href="jobseekerprofile/bookings.php">
                         Lịch tư vấn
                     </a>
                     <a href="jobseekerlogout.php">

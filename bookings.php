@@ -296,6 +296,9 @@ $listStmt->close();
         .booking-actions form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
         button, .link-button { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 9px 14px; border: 0; border-radius: 3px; background: var(--teal); color: white; font: inherit; font-weight: 700; text-decoration: none; cursor: pointer; }
         button.secondary { background: #e8efeb; color: var(--ink); }
+        .booking-actions > a.link-button.secondary.mediator-profile-link { border: 1px solid #DDD4EA; background: #fff; color: #4D347F; }
+        .booking-actions > a.link-button.secondary.mediator-profile-link:hover { border-color: #6547A5; background: #F7F5FA; color: #4D347F; }
+        .booking-actions > a.link-button.secondary.mediator-profile-link:focus-visible { outline: 3px solid #6547A5; outline-offset: 2px; }
         select, textarea { min-height: 42px; padding: 8px; border: 1px solid var(--line); border-radius: 3px; font: inherit; }
         textarea { width: min(300px, 100%); min-height: 70px; }
         .empty { margin-top: 24px; padding: 28px; border: 1px dashed #b6c7c0; text-align: center; background: white; }
@@ -337,7 +340,7 @@ $listStmt->close();
                         <p class="booking-description"><?= nl2br(booking_escape($booking['description'])) ?></p>
                     <?php endif; ?>
                     <div class="booking-actions">
-                        <a class="link-button secondary" href="jobdetail.php?id=<?= (int) $booking['mediator_id'] ?>">Xem hồ sơ hòa giải viên</a>
+                        <a class="link-button secondary mediator-profile-link" href="jobdetail.php?id=<?= (int) $booking['mediator_id'] ?>">Xem hồ sơ hòa giải viên</a>
                         <?php if ($booking['status'] === 'pending'): ?>
                             <form method="post">
                                 <input type="hidden" name="csrf_token" value="<?= booking_escape($_SESSION['booking_csrf']) ?>">
