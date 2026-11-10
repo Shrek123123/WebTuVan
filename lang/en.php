@@ -279,9 +279,9 @@ $lang = [
     //jobseekerlogin
     "email" => "Email",
     "password" => "Password",
-    "jobseeker_login_title" => "Job Seeker Login",
-    "jobseeker_login_subtitle_h2" => "We are glad to see our fellow jobseekers back!",
-    "jobseeker_login_subtitle_p" => "Let's kickstart your profile to new heights with ViecNhe",
+    "jobseeker_login_title" => "Sign in",
+    "jobseeker_login_subtitle_h2" => "Welcome back to Mediato",
+    "jobseeker_login_subtitle_p" => "Sign in to connect with experts and book a consultation.",
     "jobseeker_login_email_placeholder" => "Enter your email address",
     "jobseeker_login_password_placeholder" => "Enter your password",
     "jobseeker_login_forgot_password" => "Forget password",
@@ -347,8 +347,8 @@ $lang = [
     'jobdetail_person' => ' person(s)',
 
     //jobseekerregister
-    'jobseekerregister_title' => 'Welcome to ViecNhe!<br>(Jobseeker portal)',
-    'jobseekerregister_subtitle' => "Let's create an account to start your employment journey!",
+    'jobseekerregister_title' => 'Create your Mediato account',
+    'jobseekerregister_subtitle' => 'Explore expert profiles and send a consultation booking request.',
     'username' => 'Username',
     'placeholder_username' => 'Using your full name is recommended',
     'placeholder_email' => 'Email',
@@ -359,7 +359,7 @@ $lang = [
     'placeholder_phone_number_register' => 'Phone number',
     'terms_agreement_text' => 'I have read and agree to the',
     'terms_of_use_link_text' => 'Terms of Use',
-    'terms_of_use_after_link_text' => 'of ViecNhe', // Dùng nếu muốn có chữ "of ViecNhe" sau link
+    'terms_of_use_after_link_text' => 'of Mediato', // Dùng nếu muốn có chữ "of Mediato" sau link
     'button_register' => 'Register',
     'login_link_text_prefix' => 'Already have an account?',
     'login_link_text' => 'Login',

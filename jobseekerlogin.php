@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <link rel="icon" type="image/svg+xml" href="image/favicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $lang['jobseeker_login_title']; ?> - ViecNhe</title>
+    <title><?= htmlspecialchars($lang['jobseeker_login_title'], ENT_QUOTES, 'UTF-8') ?> - Mediato</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 

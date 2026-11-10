@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <link rel="icon" type="image/svg+xml" href="image/favicon.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jobseeker Register - ViecNhe</title>
+  <title><?= htmlspecialchars($lang['jobseekerregister_title'], ENT_QUOTES, 'UTF-8') ?> - Mediato</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -222,7 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['customer_register_csrf'], ENT_QUOTES, 'UTF-8') ?>">
         <?php if ($redirectTarget !== null): ?><input type="hidden" name="redirect" value="<?= htmlspecialchars($redirectTarget, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
         <div class="form-group">
-          <label>Họ và tên</label>
+          <label><?php echo $lang['username']; ?></label>
           <input type="text" placeholder="Họ tên của bạn" name="full_name" maxlength="100" required>
         </div>
         <div class="form-group">

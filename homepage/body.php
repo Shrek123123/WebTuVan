@@ -59,8 +59,8 @@ function mediator_render_home_booking_card($profile)
     .mediator-home { background: var(--mediator-paper); color: var(--mediator-ink); padding: 38px 22px 76px; }
     .mediator-wrap { width: min(1160px, 100%); margin: 0 auto; }
     .mediator-intro { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr); align-items: end; gap: 46px; padding: 26px 0 38px; }
-    .mediator-eyebrow { color: var(--mediator-teal); font-size: .75rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
-    .mediator-intro h1 { max-width: 650px; margin: 12px 0 15px; font: 500 clamp(2.25rem, 3.8vw, 3.8rem)/1.08 Georgia, 'Times New Roman', serif; letter-spacing: -.035em; text-wrap: balance; }
+    .mediator-eyebrow { color: var(--mediator-teal); font: 700 .85rem/1.4 Arial, Helvetica, sans-serif; letter-spacing: normal; }
+    .mediator-intro h1 { max-width: 650px; margin: 12px 0 15px; font: 500 clamp(2.25rem, 3.8vw, 3.8rem)/1.08 'Segoe UI', Tahoma, Arial, sans-serif; letter-spacing: -.035em; text-wrap: balance; }
     .mediator-intro p { max-width: 560px; margin: 0; color: var(--mediator-muted); font-size: 1rem; line-height: 1.68; }
     .mediator-note { border-left: 2px solid var(--mediator-terracotta); padding: 5px 0 5px 18px; color: var(--mediator-muted); font-size: .94rem; line-height: 1.65; }
     .mediator-note strong { display: block; margin-bottom: 6px; color: var(--mediator-ink); font-family: Georgia, 'Times New Roman', serif; font-size: 1.2rem; }
@@ -164,8 +164,8 @@ function mediator_render_home_booking_card($profile)
     .mediator-card-facts div:first-child { grid-column: auto; }
     .mediator-modes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1px; margin-top: 54px; border: 1px solid var(--mediator-line); background: var(--mediator-line); }
     .mediator-mode { padding: 23px 25px; background: #edf1eb; }
-    .mediator-mode-label { display: block; margin-bottom: 8px; color: var(--mediator-teal); font-size: .72rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
-    .mediator-mode h3 { margin: 0 0 7px; color: var(--mediator-ink); font: 500 1.2rem/1.25 Georgia, 'Times New Roman', serif; }
+    .mediator-mode-label { display: block; margin-bottom: 8px; color: var(--mediator-teal); font: 700 .85rem/1.4 Arial, Helvetica, sans-serif; letter-spacing: normal; }
+    .mediator-mode h3 { margin: 0 0 7px; color: var(--mediator-ink); font: 500 1.2rem/1.25 Arial, Helvetica, sans-serif; }
     .mediator-mode p { max-width: 470px; margin: 0; color: var(--mediator-muted); font-size: .9rem; line-height: 1.65; }
     @media (max-width: 850px) {
         .mediator-home { padding: 28px 20px 64px; }

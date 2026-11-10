@@ -285,9 +285,9 @@ $lang = [
     //jobseekerlogin
     "email" => "Email",
     "password" => "Mật khẩu",
-    "jobseeker_login_title" => "Đăng nhập Ứng viên",
-    "jobseeker_login_subtitle_h2" => "Đăng nhập - Người tìm việc",
-    "jobseeker_login_subtitle_p" => "Hãy tìm những 'việc nhẹ' phù hợp với bạn nhất!",
+    "jobseeker_login_title" => "Đăng nhập",
+    "jobseeker_login_subtitle_h2" => "Chào mừng bạn trở lại Mediato",
+    "jobseeker_login_subtitle_p" => "Đăng nhập để tiếp tục kết nối và đặt lịch với chuyên gia tư vấn.",
     "jobseeker_login_email_placeholder" => "Nhập email",
     "jobseeker_login_password_placeholder" => "Nhập mật khẩu",
     "jobseeker_login_forgot_password" => "Quên mật khẩu",
@@ -353,8 +353,8 @@ $lang = [
     'jobdetail_person' => ' người',
 
     //jobseekerregister
-    'jobseekerregister_title' => 'Đăng ký tài khoản người tìm việc',
-    'jobseekerregister_subtitle' => 'Hãy tạo tài khoản ứng viên ngay hôm nay!',
+    'jobseekerregister_title' => 'Tạo tài khoản Mediato',
+    'jobseekerregister_subtitle' => 'Khám phá hồ sơ chuyên gia và gửi yêu cầu đặt lịch tư vấn.',
     'username' => 'Tên tài khoản',
     'placeholder_username' => 'Gợi ý: nên điền đầy đủ họ tên bạn',
     'placeholder_email' => 'Email',
@@ -363,7 +363,7 @@ $lang = [
     'placeholder_reenter_password' => 'Nhập lại mật khẩu tại đây',
     'terms_agreement_text' => 'Tôi đã đọc và đồng ý với',
     'terms_of_use_link_text' => 'Điều khoản sử dụng',
-    'terms_of_use_after_link_text' => 'của ViệcNhẹ', // Dùng nếu muốn có chữ "của ViecNhe" sau link
+    'terms_of_use_after_link_text' => 'của Mediato', // Dùng nếu muốn có chữ "của Mediato" sau link
     'button_register' => 'Đăng ký',
     'login_link_text_prefix' => 'Đã có tài khoản?',
     'login_link_text' => 'Đăng nhập',

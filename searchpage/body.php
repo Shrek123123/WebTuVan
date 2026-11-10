@@ -60,8 +60,8 @@ function mediator_render_search_booking_card($profile)
     .mediator-search-page { min-height: 70vh; padding: 44px 22px 84px; background: var(--mediator-paper); color: var(--mediator-ink); }
     .mediator-search-wrap { width: min(1160px, 100%); margin: 0 auto; }
     .mediator-search-heading { padding: 15px 0 24px; }
-    .mediator-search-heading .mediator-eyebrow { color: var(--mediator-teal); font-size: .75rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
-    .mediator-search-heading h1 { margin: 10px 0 9px; font: 500 clamp(2.35rem, 4vw, 3.6rem)/1.08 Georgia, 'Times New Roman', serif; letter-spacing: -.035em; }
+    .mediator-search-heading .mediator-eyebrow { color: var(--mediator-teal); font: 700 .85rem/1.4 Arial, Helvetica, sans-serif; letter-spacing: normal; }
+    .mediator-search-heading h1 { margin: 10px 0 9px; font: 500 clamp(2.35rem, 4vw, 3.6rem)/1.08 'Segoe UI', Tahoma, Arial, sans-serif; letter-spacing: -.035em; }
     .mediator-search-heading p { margin: 0; color: var(--mediator-muted); line-height: 1.65; }
     .mediator-filter-panel { margin-bottom: 30px; padding: 18px; border: 1px solid var(--mediator-line); background: #fffefa; box-shadow: 0 10px 28px rgba(34, 46, 45, .045); }
     .mediator-search-form { display: grid; grid-template-columns: minmax(160px, 1.4fr) repeat(5, minmax(100px, .8fr)) auto; gap: 10px; align-items: end; }
@@ -143,7 +143,7 @@ function mediator_render_search_booking_card($profile)
     .mediator-card-facts div:first-child { grid-column: auto; }
     .mediator-booking-note { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 0 0 26px; padding: 18px 20px; border-left: 3px solid var(--mediator-teal); background: #eaf0eb; }
     .mediator-booking-note p { margin: 0; color: var(--mediator-muted); font-size: .88rem; line-height: 1.6; }
-    .mediator-booking-note strong { display: block; margin-bottom: 5px; color: var(--mediator-ink); font: 500 1.03rem Georgia, 'Times New Roman', serif; }
+    .mediator-booking-note strong { display: block; margin-bottom: 5px; color: var(--mediator-ink); font: 500 1.03rem/1.4 Arial, Helvetica, sans-serif; }
     .mediator-directory-empty { display: grid; grid-template-columns: minmax(0, 1fr) minmax(170px, .4fr); gap: 28px; padding: clamp(23px, 4vw, 40px); border: 1px solid var(--mediator-line); background: #fffefa; box-shadow: 0 8px 24px rgba(34, 46, 45, .045); }
     .mediator-directory-empty-kicker { display: inline-flex; align-items: center; gap: 9px; margin-bottom: 15px; color: var(--mediator-teal); font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
     .mediator-directory-empty-kicker::before { width: 8px; height: 8px; border-radius: 50%; background: #b8624d; content: ""; }
